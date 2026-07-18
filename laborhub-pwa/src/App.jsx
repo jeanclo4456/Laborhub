@@ -99,6 +99,27 @@ const LOCATIONS = [
   { id: 6, chain: 'Home Depot', name: 'Home Depot - South Bronx', address: '600 Exterior St, Bronx, NY 10451', city: 'Nueva York', workers: 7, lat: 40.8115, lng: -73.9276 },
   { id: 7, chain: 'Home Depot', name: 'Home Depot - Staten Island', address: '2501 Forest Ave, Staten Island, NY 10303', city: 'Nueva York', workers: 3, lat: 40.6289, lng: -74.1585 },
   { id: 29, chain: 'Home Depot', name: 'Home Depot - South Ozone Park', address: '112-20 Rockaway Blvd, South Ozone Park, NY 11420', city: 'Nueva York', workers: 9, lat: 40.6762, lng: -73.8125 },
+  // Long Island (Nassau) - Home Depot
+  { id: 35, chain: 'Home Depot', name: 'Home Depot - East Meadow', address: '2000 Hempstead Turnpike, East Meadow, NY 11554', city: 'Nueva York', workers: 6, lat: 40.7157, lng: -73.5590 },
+  { id: 36, chain: 'Home Depot', name: 'Home Depot - Elmont', address: '600 Hempstead Turnpike, Elmont, NY 11003', city: 'Nueva York', workers: 5, lat: 40.6989, lng: -73.7132 },
+  { id: 37, chain: 'Home Depot', name: 'Home Depot - Farmingdale', address: '202 Airport Plaza, Farmingdale, NY 11735', city: 'Nueva York', workers: 5, lat: 40.7326, lng: -73.4462 },
+  // Long Island (Suffolk) - Home Depot
+  { id: 38, chain: 'Home Depot', name: 'Home Depot - Commack', address: '5025 Jericho Turnpike, Commack, NY 11725', city: 'Nueva York', workers: 7, lat: 40.8429, lng: -73.2884 },
+  { id: 39, chain: 'Home Depot', name: 'Home Depot - Selden', address: '401 Independence Plaza, Selden, NY 11784', city: 'Nueva York', workers: 4, lat: 40.8698, lng: -73.0459 },
+  { id: 40, chain: 'Home Depot', name: 'Home Depot - Bay Shore', address: '1881 Sunrise Hwy, Bay Shore, NY 11706', city: 'Nueva York', workers: 6, lat: 40.7229, lng: -73.2454 },
+  { id: 41, chain: 'Home Depot', name: 'Home Depot - Copiague', address: '1101 Sunrise Highway, Copiague, NY 11726', city: 'Nueva York', workers: 3, lat: 40.6798, lng: -73.3993 },
+  { id: 42, chain: 'Home Depot', name: 'Home Depot - Riverhead', address: '1550 Old Country Road, Riverhead, NY 11901', city: 'Nueva York', workers: 4, lat: 40.9174, lng: -72.6620 },
+  { id: 43, chain: 'Home Depot', name: 'Home Depot - Coram', address: '346 Middle Country Rd, Coram, NY 11727', city: 'Nueva York', workers: 5, lat: 40.8759, lng: -73.0093 },
+  { id: 44, chain: 'Home Depot', name: 'Home Depot - Patchogue', address: '10 Gateway Blvd, Patchogue, NY 11772', city: 'Nueva York', workers: 4, lat: 40.7654, lng: -73.0151 },
+  { id: 45, chain: 'Home Depot', name: 'Home Depot - Bellport', address: '20 Farber Drive, Bellport, NY 11713', city: 'Nueva York', workers: 3, lat: 40.7548, lng: -72.9426 },
+  // Long Island - Lowe's
+  { id: 46, chain: "Lowe's", name: "Lowe's - Hicksville", address: '920 South Broadway, Hicksville, NY 11801', city: 'Nueva York', workers: 4, lat: 40.7684, lng: -73.5251 },
+  { id: 47, chain: "Lowe's", name: "Lowe's - Garden City", address: '700 Dibblee Dr, Garden City, NY 11530', city: 'Nueva York', workers: 3, lat: 40.7268, lng: -73.6343 },
+  { id: 48, chain: "Lowe's", name: "Lowe's - Farmingdale", address: '90 Price Pkwy, Farmingdale, NY 11735', city: 'Nueva York', workers: 3, lat: 40.7423, lng: -73.4335 },
+  { id: 49, chain: "Lowe's", name: "Lowe's - Commack", address: '100 Long Island Expressway, Commack, NY 11725', city: 'Nueva York', workers: 4, lat: 40.8434, lng: -73.2799 },
+  { id: 50, chain: "Lowe's", name: "Lowe's - Bay Shore", address: '800 Sunrise Highway, Bay Shore, NY 11706', city: 'Nueva York', workers: 3, lat: 40.7267, lng: -73.2493 },
+  { id: 51, chain: "Lowe's", name: "Lowe's - Stony Brook", address: '2150 Nesconset Highway, Stony Brook, NY 11790', city: 'Nueva York', workers: 3, lat: 40.9067, lng: -73.1321 },
+  { id: 52, chain: "Lowe's", name: "Lowe's - Medford", address: '2796 Route 112, Medford, NY 11763', city: 'Nueva York', workers: 3, lat: 40.8259, lng: -72.9973 },
   // Nueva Jersey
   { id: 8, chain: 'Home Depot', name: 'Home Depot - Newark', address: '399-443 Springfield Ave, Newark, NJ 07103', city: 'Nueva Jersey', workers: 6, lat: 40.7230, lng: -74.2010 },
   { id: 9, chain: 'Home Depot', name: 'Home Depot - Elizabeth', address: '977 W Grand St, Elizabeth, NJ 07202', city: 'Nueva Jersey', workers: 5, lat: 40.6580, lng: -74.2210 },
@@ -133,7 +154,7 @@ const LOCATIONS = [
 ];
 
 const CITY_CENTERS = {
-  'Nueva York': { lat: 40.72, lng: -73.95, zoom: 10 },
+  'Nueva York': { lat: 40.78, lng: -73.4, zoom: 9 },
   'Nueva Jersey': { lat: 40.69, lng: -74.19, zoom: 10 },
   'Florida': { lat: 25.86, lng: -80.28, zoom: 10 },
   'Texas': { lat: 29.74, lng: -95.47, zoom: 10 },
