@@ -47,6 +47,7 @@ const LOCATIONS = [
   { id: 5, name: 'Home Depot - Bensonhurst', address: '2970 Cropsey Ave, Brooklyn, NY 11214', city: 'Nueva York', workers: 4, lat: 40.5945, lng: -73.9962 },
   { id: 6, name: 'Home Depot - South Bronx', address: '600 Exterior St, Bronx, NY 10451', city: 'Nueva York', workers: 7, lat: 40.8115, lng: -73.9276 },
   { id: 7, name: 'Home Depot - Staten Island', address: '2501 Forest Ave, Staten Island, NY 10303', city: 'Nueva York', workers: 3, lat: 40.6289, lng: -74.1585 },
+  { id: 29, name: 'Home Depot - South Ozone Park', address: '112-20 Rockaway Blvd, South Ozone Park, NY 11420', city: 'Nueva York', workers: 9, lat: 40.6762, lng: -73.8125 },
   // Nueva Jersey
   { id: 8, name: 'Home Depot - Newark', address: '399-443 Springfield Ave, Newark, NJ 07103', city: 'Nueva Jersey', workers: 6, lat: 40.7230, lng: -74.2010 },
   { id: 9, name: 'Home Depot - Elizabeth', address: '977 W Grand St, Elizabeth, NJ 07202', city: 'Nueva Jersey', workers: 5, lat: 40.6580, lng: -74.2210 },
