@@ -39,29 +39,56 @@ const LANGUAGES = [
 const FREE_FAVORITES_LIMIT = 3;
 
 const LOCATIONS = [
-  { id: 1, name: 'Home Depot - Queens Blvd', city: 'Nueva York', workers: 8, lat: 40.7282, lng: -73.8803 },
-  { id: 2, name: 'Home Depot - College Point', city: 'Nueva York', workers: 5, lat: 40.7854, lng: -73.8398 },
-  { id: 3, name: 'Home Depot - Newark Ave', city: 'Nueva Jersey', workers: 6, lat: 40.7282, lng: -74.0776 },
-  { id: 4, name: 'Home Depot - Doral', city: 'Florida', workers: 11, lat: 25.8195, lng: -80.3553 },
-  { id: 5, name: 'Home Depot - Westheimer Rd', city: 'Texas', workers: 7, lat: 29.7433, lng: -95.4763 },
-  { id: 6, name: 'Home Depot - Sunset Blvd', city: 'California', workers: 9, lat: 34.0928, lng: -118.3287 },
+  // Nueva York
+  { id: 1, name: 'Home Depot - Flushing', address: '131-35 Avery Ave, Flushing, NY 11355', city: 'Nueva York', workers: 8, lat: 40.7614, lng: -73.8203 },
+  { id: 2, name: 'Home Depot - Long Island City', address: '50-10 Northern Blvd, Long Island City, NY 11101', city: 'Nueva York', workers: 6, lat: 40.7477, lng: -73.9376 },
+  { id: 3, name: 'Home Depot - Jamaica', address: '92-30 168th St, Jamaica, NY 11433', city: 'Nueva York', workers: 5, lat: 40.7007, lng: -73.7890 },
+  { id: 4, name: 'Home Depot - Sunset Park', address: '550 Hamilton Ave, Brooklyn, NY 11232', city: 'Nueva York', workers: 9, lat: 40.6627, lng: -74.0046 },
+  { id: 5, name: 'Home Depot - Bensonhurst', address: '2970 Cropsey Ave, Brooklyn, NY 11214', city: 'Nueva York', workers: 4, lat: 40.5945, lng: -73.9962 },
+  { id: 6, name: 'Home Depot - South Bronx', address: '600 Exterior St, Bronx, NY 10451', city: 'Nueva York', workers: 7, lat: 40.8115, lng: -73.9276 },
+  { id: 7, name: 'Home Depot - Staten Island', address: '2501 Forest Ave, Staten Island, NY 10303', city: 'Nueva York', workers: 3, lat: 40.6289, lng: -74.1585 },
+  // Nueva Jersey
+  { id: 8, name: 'Home Depot - Newark', address: '399-443 Springfield Ave, Newark, NJ 07103', city: 'Nueva Jersey', workers: 6, lat: 40.7230, lng: -74.2010 },
+  { id: 9, name: 'Home Depot - Elizabeth', address: '977 W Grand St, Elizabeth, NJ 07202', city: 'Nueva Jersey', workers: 5, lat: 40.6580, lng: -74.2210 },
+  { id: 10, name: 'Home Depot - Jersey City', address: '440 NJ-440, Jersey City, NJ 07305', city: 'Nueva Jersey', workers: 4, lat: 40.6895, lng: -74.0917 },
+  { id: 11, name: 'Home Depot - Linden', address: '701 W Edgar Rd, Linden, NJ 07036', city: 'Nueva Jersey', workers: 3, lat: 40.6265, lng: -74.2418 },
+  { id: 12, name: 'Home Depot - Union', address: '930 Springfield Rd, Union, NJ 07083', city: 'Nueva Jersey', workers: 5, lat: 40.6976, lng: -74.2632 },
+  // Florida
+  { id: 13, name: 'Home Depot - Doral', address: '1650 NW 117th Place, Miami, FL 33182', city: 'Florida', workers: 11, lat: 25.8090, lng: -80.3733 },
+  { id: 14, name: 'Home Depot - Hialeah', address: '5500 NW 167th St, Hialeah, FL 33014', city: 'Florida', workers: 7, lat: 25.9187, lng: -80.2895 },
+  { id: 15, name: 'Home Depot - West Flagler', address: '7899 W Flagler St, Miami, FL 33144', city: 'Florida', workers: 6, lat: 25.7654, lng: -80.3181 },
+  { id: 16, name: 'Home Depot - Biscayne', address: '12055 Biscayne Blvd, Miami, FL 33181', city: 'Florida', workers: 4, lat: 25.8917, lng: -80.1615 },
+  { id: 17, name: 'Home Depot - Little Havana', address: '3030 SW 8th St, Miami, FL 33135', city: 'Florida', workers: 8, lat: 25.7658, lng: -80.2436 },
+  { id: 18, name: 'Home Depot - Pembroke Pines', address: '11001 Pines Blvd, Pembroke Pines, FL 33026', city: 'Florida', workers: 5, lat: 26.0056, lng: -80.3223 },
+  // Texas
+  { id: 19, name: 'Home Depot - Westheimer', address: '8400 Westheimer Rd, Houston, TX 77063', city: 'Texas', workers: 7, lat: 29.7392, lng: -95.5147 },
+  { id: 20, name: 'Home Depot - West Loop', address: '5445 West Loop S, Houston, TX 77081', city: 'Texas', workers: 5, lat: 29.7147, lng: -95.4489 },
+  { id: 21, name: 'Home Depot - Chimney Rock', address: '11500 Chimney Rock Rd, Houston, TX 77035', city: 'Texas', workers: 4, lat: 29.6669, lng: -95.4779 },
+  { id: 22, name: 'Home Depot - Katy Freeway', address: '8400 Katy Fwy, Houston, TX 77024', city: 'Texas', workers: 6, lat: 29.7813, lng: -95.5122 },
+  { id: 23, name: 'Home Depot - North Loop', address: '999 North Loop W, Houston, TX 77008', city: 'Texas', workers: 3, lat: 29.8058, lng: -95.4147 },
+  // California
+  { id: 24, name: 'Home Depot - Sunset Blvd', address: '5600 Sunset Blvd, Hollywood, CA 90028', city: 'California', workers: 9, lat: 34.0983, lng: -118.3267 },
+  { id: 25, name: 'Home Depot - Wilshire', address: '1675 Wilshire Blvd, Los Angeles, CA 90017', city: 'California', workers: 6, lat: 34.0567, lng: -118.2717 },
+  { id: 26, name: 'Home Depot - Highland Park', address: '2055 N Figueroa St, Los Angeles, CA 90065', city: 'California', workers: 5, lat: 34.1089, lng: -118.1978 },
+  { id: 27, name: 'Home Depot - Slauson', address: '1830 W Slauson Ave, Los Angeles, CA 90047', city: 'California', workers: 4, lat: 33.9887, lng: -118.3092 },
+  { id: 28, name: 'Home Depot - Glendale', address: '5040 San Fernando Rd, Glendale, CA 91204', city: 'California', workers: 7, lat: 34.1289, lng: -118.2645 },
 ];
 
 const CITY_CENTERS = {
-  'Nueva York': { lat: 40.755, lng: -73.86, zoom: 11 },
-  'Nueva Jersey': { lat: 40.7282, lng: -74.0776, zoom: 12 },
-  'Florida': { lat: 25.8195, lng: -80.3553, zoom: 12 },
-  'Texas': { lat: 29.7433, lng: -95.4763, zoom: 12 },
-  'California': { lat: 34.0928, lng: -118.3287, zoom: 12 },
+  'Nueva York': { lat: 40.72, lng: -73.95, zoom: 10 },
+  'Nueva Jersey': { lat: 40.69, lng: -74.19, zoom: 10 },
+  'Florida': { lat: 25.86, lng: -80.28, zoom: 10 },
+  'Texas': { lat: 29.74, lng: -95.47, zoom: 10 },
+  'California': { lat: 34.06, lng: -118.26, zoom: 10 },
 };
 
 const WORKERS = [
-  { id: 1, name: 'Miguel Torres', initials: 'MT', color: 'bg-orange-500', specialties: ['plumbing', 'general'], experience: 8, languages: ['Español', 'Inglés'], transport: true, tools: true, hourlyRate: 28, dailyRate: 210, rating: 4.9, reviewCount: 47, city: 'Nueva York', location: 'Home Depot - Queens Blvd', availableNow: true, availableDays: [true, true, true, true, true, true, false], verified: true, featured: true },
-  { id: 2, name: 'Carlos Ramírez', initials: 'CR', color: 'bg-emerald-600', specialties: ['carpentry', 'drywall'], experience: 5, languages: ['Español'], transport: true, tools: true, hourlyRate: 24, dailyRate: 185, rating: 4.7, reviewCount: 31, city: 'Nueva Jersey', location: 'Home Depot - Newark Ave', availableNow: false, availableDays: [false, true, true, true, true, false, false], verified: true, featured: false },
+  { id: 1, name: 'Miguel Torres', initials: 'MT', color: 'bg-orange-500', specialties: ['plumbing', 'general'], experience: 8, languages: ['Español', 'Inglés'], transport: true, tools: true, hourlyRate: 28, dailyRate: 210, rating: 4.9, reviewCount: 47, city: 'Nueva York', location: 'Home Depot - Flushing', availableNow: true, availableDays: [true, true, true, true, true, true, false], verified: true, featured: true },
+  { id: 2, name: 'Carlos Ramírez', initials: 'CR', color: 'bg-emerald-600', specialties: ['carpentry', 'drywall'], experience: 5, languages: ['Español'], transport: true, tools: true, hourlyRate: 24, dailyRate: 185, rating: 4.7, reviewCount: 31, city: 'Nueva Jersey', location: 'Home Depot - Jersey City', availableNow: false, availableDays: [false, true, true, true, true, false, false], verified: true, featured: false },
   { id: 3, name: 'Luis Fernández', initials: 'LF', color: 'bg-slate-600', specialties: ['electrical', 'hvac'], experience: 12, languages: ['Español', 'Inglés'], transport: true, tools: true, hourlyRate: 35, dailyRate: 260, rating: 5.0, reviewCount: 89, city: 'Florida', location: 'Home Depot - Doral', availableNow: true, availableDays: [true, true, true, true, true, true, true], verified: true, featured: true },
-  { id: 4, name: 'José Martínez', initials: 'JM', color: 'bg-amber-600', specialties: ['painting', 'drywall'], experience: 4, languages: ['Español'], transport: false, tools: true, hourlyRate: 20, dailyRate: 150, rating: 4.5, reviewCount: 18, city: 'Texas', location: 'Home Depot - Westheimer Rd', availableNow: true, availableDays: [true, false, true, false, true, false, true], verified: false, featured: false },
+  { id: 4, name: 'José Martínez', initials: 'JM', color: 'bg-amber-600', specialties: ['painting', 'drywall'], experience: 4, languages: ['Español'], transport: false, tools: true, hourlyRate: 20, dailyRate: 150, rating: 4.5, reviewCount: 18, city: 'Texas', location: 'Home Depot - Westheimer', availableNow: true, availableDays: [true, false, true, false, true, false, true], verified: false, featured: false },
   { id: 5, name: 'Ana Gómez', initials: 'AG', color: 'bg-rose-500', specialties: ['tile', 'demolition'], experience: 6, languages: ['Español', 'Inglés', 'Mandarín'], transport: true, tools: true, hourlyRate: 26, dailyRate: 195, rating: 4.8, reviewCount: 54, city: 'California', location: 'Home Depot - Sunset Blvd', availableNow: false, availableDays: [false, true, true, true, true, true, false], verified: true, featured: false },
-  { id: 6, name: 'Roberto Díaz', initials: 'RD', color: 'bg-stone-600', specialties: ['roofing', 'general'], experience: 10, languages: ['Español', 'Ruso'], transport: true, tools: false, hourlyRate: 27, dailyRate: 200, rating: 4.6, reviewCount: 39, city: 'Nueva York', location: 'Home Depot - College Point', availableNow: true, availableDays: [true, true, true, true, true, false, false], verified: true, featured: false },
+  { id: 6, name: 'Roberto Díaz', initials: 'RD', color: 'bg-stone-600', specialties: ['roofing', 'general'], experience: 10, languages: ['Español', 'Ruso'], transport: true, tools: false, hourlyRate: 27, dailyRate: 200, rating: 4.6, reviewCount: 39, city: 'Nueva York', location: 'Home Depot - Long Island City', availableNow: true, availableDays: [true, true, true, true, true, false, false], verified: true, featured: false },
   { id: 7, name: 'David Sánchez', initials: 'DS', color: 'bg-teal-600', specialties: ['plumbing', 'hvac'], experience: 15, languages: ['Español', 'Inglés', 'Criollo Haitiano'], transport: true, tools: true, hourlyRate: 32, dailyRate: 240, rating: 4.9, reviewCount: 102, city: 'Florida', location: 'Home Depot - Doral', availableNow: false, availableDays: [true, true, false, true, true, true, true], verified: true, featured: true },
 ];
 
@@ -331,7 +358,7 @@ export default function LaborHubApp() {
     tools: true,
     hourlyRate: 25,
     dailyRate: 190,
-    meetingPoint: 'Home Depot - Queens Blvd',
+    meetingPoint: 'Home Depot - Flushing',
     availableDays: [false, true, true, true, true, true, true],
   });
   const [justSaved, setJustSaved] = useState(false);
@@ -949,6 +976,7 @@ export default function LaborHubApp() {
         {selectedLoc ? (
           <div className="bg-white border border-stone-200 rounded-2xl p-4">
             <div className="font-bold text-stone-900">{selectedLoc.name}</div>
+            <div className="text-xs text-stone-400 mb-1">{selectedLoc.address}</div>
             <div className="text-sm text-stone-500 mb-3">{selectedLoc.workers} {L.workersAvailableWord}</div>
             {role === 'contractor' ? (
               <button onClick={() => { setSelectedCity(selectedLoc.city); setScreen('c-search'); }} className="w-full bg-slate-700 text-white rounded-xl py-2.5 text-sm font-semibold">{L.viewWorkersHere}</button>
