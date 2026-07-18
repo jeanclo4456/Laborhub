@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import {
   Hammer, Wrench, Zap, PaintBucket, Layers, HardHat, LayoutGrid, Trash2, Users, Wind, MoreHorizontal,
   MapPin, Star, MessageCircle, Bell, Calendar, Clock, Camera, Check, X, Filter, Search, Heart,
@@ -36,13 +39,21 @@ const LANGUAGES = [
 const FREE_FAVORITES_LIMIT = 3;
 
 const LOCATIONS = [
-  { id: 1, name: 'Home Depot - Queens Blvd', city: 'Nueva York', workers: 8, x: 40, y: 30 },
-  { id: 2, name: 'Home Depot - College Point', city: 'Nueva York', workers: 5, x: 62, y: 58 },
-  { id: 3, name: 'Home Depot - Newark Ave', city: 'Nueva Jersey', workers: 6, x: 50, y: 42 },
-  { id: 4, name: 'Home Depot - Doral', city: 'Florida', workers: 11, x: 45, y: 50 },
-  { id: 5, name: 'Home Depot - Westheimer Rd', city: 'Texas', workers: 7, x: 35, y: 60 },
-  { id: 6, name: 'Home Depot - Sunset Blvd', city: 'California', workers: 9, x: 55, y: 35 },
+  { id: 1, name: 'Home Depot - Queens Blvd', city: 'Nueva York', workers: 8, lat: 40.7282, lng: -73.8803 },
+  { id: 2, name: 'Home Depot - College Point', city: 'Nueva York', workers: 5, lat: 40.7854, lng: -73.8398 },
+  { id: 3, name: 'Home Depot - Newark Ave', city: 'Nueva Jersey', workers: 6, lat: 40.7282, lng: -74.0776 },
+  { id: 4, name: 'Home Depot - Doral', city: 'Florida', workers: 11, lat: 25.8195, lng: -80.3553 },
+  { id: 5, name: 'Home Depot - Westheimer Rd', city: 'Texas', workers: 7, lat: 29.7433, lng: -95.4763 },
+  { id: 6, name: 'Home Depot - Sunset Blvd', city: 'California', workers: 9, lat: 34.0928, lng: -118.3287 },
 ];
+
+const CITY_CENTERS = {
+  'Nueva York': { lat: 40.755, lng: -73.86, zoom: 11 },
+  'Nueva Jersey': { lat: 40.7282, lng: -74.0776, zoom: 12 },
+  'Florida': { lat: 25.8195, lng: -80.3553, zoom: 12 },
+  'Texas': { lat: 29.7433, lng: -95.4763, zoom: 12 },
+  'California': { lat: 34.0928, lng: -118.3287, zoom: 12 },
+};
 
 const WORKERS = [
   { id: 1, name: 'Miguel Torres', initials: 'MT', color: 'bg-orange-500', specialties: ['plumbing', 'general'], experience: 8, languages: ['Español', 'Inglés'], transport: true, tools: true, hourlyRate: 28, dailyRate: 210, rating: 4.9, reviewCount: 47, city: 'Nueva York', location: 'Home Depot - Queens Blvd', availableNow: true, availableDays: [true, true, true, true, true, true, false], verified: true, featured: true },
@@ -200,6 +211,22 @@ const translations = {
 function specialtyName(id, lang) {
   const s = SPECIALTIES.find(sp => sp.id === id);
   return s ? s[lang] : id;
+}
+
+function createPinIcon(count, isSelected) {
+  return L.divIcon({
+    className: '',
+    html: `
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div style="background:${isSelected ? '#1c1917' : '#78716c'};border-radius:9999px;padding:6px;box-shadow:0 1px 3px rgba(0,0,0,0.35);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+        </div>
+        <span style="background:white;font-size:11px;font-weight:700;padding:1px 6px;border-radius:9999px;box-shadow:0 1px 2px rgba(0,0,0,0.25);margin-top:2px;color:#44403c;white-space:nowrap;">${count}</span>
+      </div>
+    `,
+    iconSize: [40, 52],
+    iconAnchor: [20, 52],
+  });
 }
 
 function HazardStripe() {
@@ -895,21 +922,28 @@ export default function LaborHubApp() {
   const renderMap = () => {
     const cityLocations = LOCATIONS.filter(l => l.city === mapCity);
     const selectedLoc = LOCATIONS.find(l => l.id === selectedLocationId);
+    const center = CITY_CENTERS[mapCity];
     return (
       <div className="p-4 space-y-3">
         <div className="flex gap-2 overflow-x-auto pb-1">
           {CITIES.map(c => <Chip key={c} label={c} activeColor="slate" active={mapCity === c} onClick={() => { setMapCity(c); setSelectedLocationId(null); }} />)}
         </div>
 
-        <div className="relative bg-gradient-to-br from-stone-100 to-slate-100 rounded-2xl border border-stone-200 h-64 overflow-hidden">
-          {cityLocations.map(loc => (
-            <button key={loc.id} onClick={() => setSelectedLocationId(loc.id)} style={{ left: `${loc.x}%`, top: `${loc.y}%` }} className="absolute transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-              <div className={`rounded-full p-1.5 ${selectedLocationId === loc.id ? 'bg-stone-900' : 'bg-stone-500'}`}>
-                <MapPin size={18} className="text-white" fill="currentColor" />
-              </div>
-              <span className="bg-white text-xs font-bold px-1.5 rounded-full shadow mt-0.5 text-stone-700">{loc.workers}</span>
-            </button>
-          ))}
+        <div className="relative rounded-2xl border border-stone-200 h-64 overflow-hidden">
+          <MapContainer key={mapCity} center={[center.lat, center.lng]} zoom={center.zoom} style={{ height: '100%', width: '100%' }} scrollWheelZoom={false}>
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {cityLocations.map(loc => (
+              <Marker
+                key={loc.id}
+                position={[loc.lat, loc.lng]}
+                icon={createPinIcon(loc.workers, selectedLocationId === loc.id)}
+                eventHandlers={{ click: () => setSelectedLocationId(loc.id) }}
+              />
+            ))}
+          </MapContainer>
         </div>
 
         {selectedLoc ? (
