@@ -6,7 +6,7 @@ import {
   Hammer, Wrench, Zap, PaintBucket, Layers, HardHat, LayoutGrid, Trash2, Users, Wind, MoreHorizontal,
   MapPin, Star, MessageCircle, Bell, Calendar, Clock, Camera, Check, X, Filter, Search, Heart,
   ChevronRight, ChevronDown, Globe, Truck, Home, User, Briefcase, DollarSign, Plus, ArrowLeft, Send,
-  TrendingUp, BadgeCheck, Settings, HelpCircle, LogOut, Lock, Eye, Pause, Award, ShieldCheck
+  TrendingUp, BadgeCheck, Settings, HelpCircle, LogOut, Lock, Eye, Pause, Award, ShieldCheck, Navigation
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -49,6 +49,12 @@ const TOOLS = [
 
 const VEHICLES = ['Pickup', 'Van', 'Cargo Van', 'Camión', 'SUV', 'Sedán', 'Sin vehículo'];
 
+const PORTFOLIO_CATEGORIES = [
+  { id: 'before', es: 'Antes', en: 'Before' },
+  { id: 'after', es: 'Después', en: 'After' },
+  { id: 'recent', es: 'Trabajos recientes', en: 'Recent jobs' },
+];
+
 const WORKER_STATUSES = [
   { id: 'available', es: 'Disponible', en: 'Available', color: 'bg-stone-900', dotColor: 'bg-amber-400', beacon: true },
   { id: 'enroute', es: 'En camino', en: 'On the way', color: 'bg-slate-700', icon: Truck },
@@ -85,39 +91,45 @@ const FREE_FAVORITES_LIMIT = 3;
 
 const LOCATIONS = [
   // Nueva York
-  { id: 1, name: 'Home Depot - Flushing', address: '131-35 Avery Ave, Flushing, NY 11355', city: 'Nueva York', workers: 8, lat: 40.7614, lng: -73.8203 },
-  { id: 2, name: 'Home Depot - Long Island City', address: '50-10 Northern Blvd, Long Island City, NY 11101', city: 'Nueva York', workers: 6, lat: 40.7477, lng: -73.9376 },
-  { id: 3, name: 'Home Depot - Jamaica', address: '92-30 168th St, Jamaica, NY 11433', city: 'Nueva York', workers: 5, lat: 40.7007, lng: -73.7890 },
-  { id: 4, name: 'Home Depot - Sunset Park', address: '550 Hamilton Ave, Brooklyn, NY 11232', city: 'Nueva York', workers: 9, lat: 40.6627, lng: -74.0046 },
-  { id: 5, name: 'Home Depot - Bensonhurst', address: '2970 Cropsey Ave, Brooklyn, NY 11214', city: 'Nueva York', workers: 4, lat: 40.5945, lng: -73.9962 },
-  { id: 6, name: 'Home Depot - South Bronx', address: '600 Exterior St, Bronx, NY 10451', city: 'Nueva York', workers: 7, lat: 40.8115, lng: -73.9276 },
-  { id: 7, name: 'Home Depot - Staten Island', address: '2501 Forest Ave, Staten Island, NY 10303', city: 'Nueva York', workers: 3, lat: 40.6289, lng: -74.1585 },
-  { id: 29, name: 'Home Depot - South Ozone Park', address: '112-20 Rockaway Blvd, South Ozone Park, NY 11420', city: 'Nueva York', workers: 9, lat: 40.6762, lng: -73.8125 },
+  { id: 1, chain: 'Home Depot', name: 'Home Depot - Flushing', address: '131-35 Avery Ave, Flushing, NY 11355', city: 'Nueva York', workers: 8, lat: 40.7614, lng: -73.8203 },
+  { id: 2, chain: 'Home Depot', name: 'Home Depot - Long Island City', address: '50-10 Northern Blvd, Long Island City, NY 11101', city: 'Nueva York', workers: 6, lat: 40.7477, lng: -73.9376 },
+  { id: 3, chain: 'Home Depot', name: 'Home Depot - Jamaica', address: '92-30 168th St, Jamaica, NY 11433', city: 'Nueva York', workers: 5, lat: 40.7007, lng: -73.7890 },
+  { id: 4, chain: 'Home Depot', name: 'Home Depot - Sunset Park', address: '550 Hamilton Ave, Brooklyn, NY 11232', city: 'Nueva York', workers: 9, lat: 40.6627, lng: -74.0046 },
+  { id: 5, chain: 'Home Depot', name: 'Home Depot - Bensonhurst', address: '2970 Cropsey Ave, Brooklyn, NY 11214', city: 'Nueva York', workers: 4, lat: 40.5945, lng: -73.9962 },
+  { id: 6, chain: 'Home Depot', name: 'Home Depot - South Bronx', address: '600 Exterior St, Bronx, NY 10451', city: 'Nueva York', workers: 7, lat: 40.8115, lng: -73.9276 },
+  { id: 7, chain: 'Home Depot', name: 'Home Depot - Staten Island', address: '2501 Forest Ave, Staten Island, NY 10303', city: 'Nueva York', workers: 3, lat: 40.6289, lng: -74.1585 },
+  { id: 29, chain: 'Home Depot', name: 'Home Depot - South Ozone Park', address: '112-20 Rockaway Blvd, South Ozone Park, NY 11420', city: 'Nueva York', workers: 9, lat: 40.6762, lng: -73.8125 },
   // Nueva Jersey
-  { id: 8, name: 'Home Depot - Newark', address: '399-443 Springfield Ave, Newark, NJ 07103', city: 'Nueva Jersey', workers: 6, lat: 40.7230, lng: -74.2010 },
-  { id: 9, name: 'Home Depot - Elizabeth', address: '977 W Grand St, Elizabeth, NJ 07202', city: 'Nueva Jersey', workers: 5, lat: 40.6580, lng: -74.2210 },
-  { id: 10, name: 'Home Depot - Jersey City', address: '440 NJ-440, Jersey City, NJ 07305', city: 'Nueva Jersey', workers: 4, lat: 40.6895, lng: -74.0917 },
-  { id: 11, name: 'Home Depot - Linden', address: '701 W Edgar Rd, Linden, NJ 07036', city: 'Nueva Jersey', workers: 3, lat: 40.6265, lng: -74.2418 },
-  { id: 12, name: 'Home Depot - Union', address: '930 Springfield Rd, Union, NJ 07083', city: 'Nueva Jersey', workers: 5, lat: 40.6976, lng: -74.2632 },
+  { id: 8, chain: 'Home Depot', name: 'Home Depot - Newark', address: '399-443 Springfield Ave, Newark, NJ 07103', city: 'Nueva Jersey', workers: 6, lat: 40.7230, lng: -74.2010 },
+  { id: 9, chain: 'Home Depot', name: 'Home Depot - Elizabeth', address: '977 W Grand St, Elizabeth, NJ 07202', city: 'Nueva Jersey', workers: 5, lat: 40.6580, lng: -74.2210 },
+  { id: 10, chain: 'Home Depot', name: 'Home Depot - Jersey City', address: '440 NJ-440, Jersey City, NJ 07305', city: 'Nueva Jersey', workers: 4, lat: 40.6895, lng: -74.0917 },
+  { id: 11, chain: 'Home Depot', name: 'Home Depot - Linden', address: '701 W Edgar Rd, Linden, NJ 07036', city: 'Nueva Jersey', workers: 3, lat: 40.6265, lng: -74.2418 },
+  { id: 12, chain: 'Home Depot', name: 'Home Depot - Union', address: '930 Springfield Rd, Union, NJ 07083', city: 'Nueva Jersey', workers: 5, lat: 40.6976, lng: -74.2632 },
   // Florida
-  { id: 13, name: 'Home Depot - Doral', address: '1650 NW 117th Place, Miami, FL 33182', city: 'Florida', workers: 11, lat: 25.8090, lng: -80.3733 },
-  { id: 14, name: 'Home Depot - Hialeah', address: '5500 NW 167th St, Hialeah, FL 33014', city: 'Florida', workers: 7, lat: 25.9187, lng: -80.2895 },
-  { id: 15, name: 'Home Depot - West Flagler', address: '7899 W Flagler St, Miami, FL 33144', city: 'Florida', workers: 6, lat: 25.7654, lng: -80.3181 },
-  { id: 16, name: 'Home Depot - Biscayne', address: '12055 Biscayne Blvd, Miami, FL 33181', city: 'Florida', workers: 4, lat: 25.8917, lng: -80.1615 },
-  { id: 17, name: 'Home Depot - Little Havana', address: '3030 SW 8th St, Miami, FL 33135', city: 'Florida', workers: 8, lat: 25.7658, lng: -80.2436 },
-  { id: 18, name: 'Home Depot - Pembroke Pines', address: '11001 Pines Blvd, Pembroke Pines, FL 33026', city: 'Florida', workers: 5, lat: 26.0056, lng: -80.3223 },
+  { id: 13, chain: 'Home Depot', name: 'Home Depot - Doral', address: '1650 NW 117th Place, Miami, FL 33182', city: 'Florida', workers: 11, lat: 25.8090, lng: -80.3733 },
+  { id: 14, chain: 'Home Depot', name: 'Home Depot - Hialeah', address: '5500 NW 167th St, Hialeah, FL 33014', city: 'Florida', workers: 7, lat: 25.9187, lng: -80.2895 },
+  { id: 15, chain: 'Home Depot', name: 'Home Depot - West Flagler', address: '7899 W Flagler St, Miami, FL 33144', city: 'Florida', workers: 6, lat: 25.7654, lng: -80.3181 },
+  { id: 16, chain: 'Home Depot', name: 'Home Depot - Biscayne', address: '12055 Biscayne Blvd, Miami, FL 33181', city: 'Florida', workers: 4, lat: 25.8917, lng: -80.1615 },
+  { id: 17, chain: 'Home Depot', name: 'Home Depot - Little Havana', address: '3030 SW 8th St, Miami, FL 33135', city: 'Florida', workers: 8, lat: 25.7658, lng: -80.2436 },
+  { id: 18, chain: 'Home Depot', name: 'Home Depot - Pembroke Pines', address: '11001 Pines Blvd, Pembroke Pines, FL 33026', city: 'Florida', workers: 5, lat: 26.0056, lng: -80.3223 },
   // Texas
-  { id: 19, name: 'Home Depot - Westheimer', address: '8400 Westheimer Rd, Houston, TX 77063', city: 'Texas', workers: 7, lat: 29.7392, lng: -95.5147 },
-  { id: 20, name: 'Home Depot - West Loop', address: '5445 West Loop S, Houston, TX 77081', city: 'Texas', workers: 5, lat: 29.7147, lng: -95.4489 },
-  { id: 21, name: 'Home Depot - Chimney Rock', address: '11500 Chimney Rock Rd, Houston, TX 77035', city: 'Texas', workers: 4, lat: 29.6669, lng: -95.4779 },
-  { id: 22, name: 'Home Depot - Katy Freeway', address: '8400 Katy Fwy, Houston, TX 77024', city: 'Texas', workers: 6, lat: 29.7813, lng: -95.5122 },
-  { id: 23, name: 'Home Depot - North Loop', address: '999 North Loop W, Houston, TX 77008', city: 'Texas', workers: 3, lat: 29.8058, lng: -95.4147 },
+  { id: 19, chain: 'Home Depot', name: 'Home Depot - Westheimer', address: '8400 Westheimer Rd, Houston, TX 77063', city: 'Texas', workers: 7, lat: 29.7392, lng: -95.5147 },
+  { id: 20, chain: 'Home Depot', name: 'Home Depot - West Loop', address: '5445 West Loop S, Houston, TX 77081', city: 'Texas', workers: 5, lat: 29.7147, lng: -95.4489 },
+  { id: 21, chain: 'Home Depot', name: 'Home Depot - Chimney Rock', address: '11500 Chimney Rock Rd, Houston, TX 77035', city: 'Texas', workers: 4, lat: 29.6669, lng: -95.4779 },
+  { id: 22, chain: 'Home Depot', name: 'Home Depot - Katy Freeway', address: '8400 Katy Fwy, Houston, TX 77024', city: 'Texas', workers: 6, lat: 29.7813, lng: -95.5122 },
+  { id: 23, chain: 'Home Depot', name: 'Home Depot - North Loop', address: '999 North Loop W, Houston, TX 77008', city: 'Texas', workers: 3, lat: 29.8058, lng: -95.4147 },
   // California
-  { id: 24, name: 'Home Depot - Sunset Blvd', address: '5600 Sunset Blvd, Hollywood, CA 90028', city: 'California', workers: 9, lat: 34.0983, lng: -118.3267 },
-  { id: 25, name: 'Home Depot - Wilshire', address: '1675 Wilshire Blvd, Los Angeles, CA 90017', city: 'California', workers: 6, lat: 34.0567, lng: -118.2717 },
-  { id: 26, name: 'Home Depot - Highland Park', address: '2055 N Figueroa St, Los Angeles, CA 90065', city: 'California', workers: 5, lat: 34.1089, lng: -118.1978 },
-  { id: 27, name: 'Home Depot - Slauson', address: '1830 W Slauson Ave, Los Angeles, CA 90047', city: 'California', workers: 4, lat: 33.9887, lng: -118.3092 },
-  { id: 28, name: 'Home Depot - Glendale', address: '5040 San Fernando Rd, Glendale, CA 91204', city: 'California', workers: 7, lat: 34.1289, lng: -118.2645 },
+  { id: 24, chain: 'Home Depot', name: 'Home Depot - Sunset Blvd', address: '5600 Sunset Blvd, Hollywood, CA 90028', city: 'California', workers: 9, lat: 34.0983, lng: -118.3267 },
+  { id: 25, chain: 'Home Depot', name: 'Home Depot - Wilshire', address: '1675 Wilshire Blvd, Los Angeles, CA 90017', city: 'California', workers: 6, lat: 34.0567, lng: -118.2717 },
+  { id: 26, chain: 'Home Depot', name: 'Home Depot - Highland Park', address: '2055 N Figueroa St, Los Angeles, CA 90065', city: 'California', workers: 5, lat: 34.1089, lng: -118.1978 },
+  { id: 27, chain: 'Home Depot', name: 'Home Depot - Slauson', address: '1830 W Slauson Ave, Los Angeles, CA 90047', city: 'California', workers: 4, lat: 33.9887, lng: -118.3092 },
+  { id: 28, chain: 'Home Depot', name: 'Home Depot - Glendale', address: '5040 San Fernando Rd, Glendale, CA 91204', city: 'California', workers: 7, lat: 34.1289, lng: -118.2645 },
+  // Lowe's
+  { id: 30, chain: "Lowe's", name: "Lowe's - Park Slope", address: '118 2nd Ave, Brooklyn, NY 11215', city: 'Nueva York', workers: 4, lat: 40.6738, lng: -73.9857 },
+  { id: 31, chain: "Lowe's", name: "Lowe's - Jersey City", address: '727 NJ-440, Jersey City, NJ 07304', city: 'Nueva Jersey', workers: 3, lat: 40.7009, lng: -74.0776 },
+  { id: 32, chain: "Lowe's", name: "Lowe's - Westchester", address: '8859 SW 24th St, Miami, FL 33165', city: 'Florida', workers: 5, lat: 25.7473, lng: -80.3553 },
+  { id: 33, chain: "Lowe's", name: "Lowe's - Energy Corridor", address: '2610 S Kirkwood Rd, Houston, TX 77077', city: 'Texas', workers: 4, lat: 29.7397, lng: -95.6435 },
+  { id: 34, chain: "Lowe's", name: "Lowe's - Mid-City", address: '4550 W Pico Blvd, Los Angeles, CA 90019', city: 'California', workers: 3, lat: 34.0486, lng: -118.3267 },
 ];
 
 const CITY_CENTERS = {
@@ -231,6 +243,13 @@ const translations = {
     statMemberSince: 'Miembro desde', statHoursWorked: 'Horas trabajadas',
     statEarningsMonth: 'Ganado este mes', statEarningsYear: 'Ganado este año',
     minutesAbbr: 'min', hoursAbbr: 'hrs',
+    searchNearMe: 'Buscar cerca de mí', locatingText: 'Buscando tu ubicación...',
+    locationDeniedText: 'No pudimos acceder a tu ubicación. Revisa los permisos del navegador.',
+    addPointButton: 'Agregar punto', customPointNamePlaceholder: 'Nombre del lugar (ej. Ferretería López)',
+    addPointConfirm: 'Agregar', allCitiesWord: 'Todas', allChainsWord: 'Todas',
+    milesAway: 'mi de distancia', smartSearchLabel: 'Búsqueda inteligente',
+    smartSearchPlaceholder: 'Ej. "plomero con OSHA en Queens"', detectedWord: 'Detectamos',
+    customChainLabel: 'Personalizado',
   },
   en: {
     appName: 'LaborHub',
@@ -296,6 +315,13 @@ const translations = {
     statMemberSince: 'Member since', statHoursWorked: 'Hours worked',
     statEarningsMonth: 'Earned this month', statEarningsYear: 'Earned this year',
     minutesAbbr: 'min', hoursAbbr: 'hrs',
+    searchNearMe: 'Search near me', locatingText: 'Finding your location...',
+    locationDeniedText: "We couldn't access your location. Check your browser permissions.",
+    addPointButton: 'Add point', customPointNamePlaceholder: 'Place name (e.g. Local hardware store)',
+    addPointConfirm: 'Add', allCitiesWord: 'All', allChainsWord: 'All',
+    milesAway: 'mi away', smartSearchLabel: 'Smart search',
+    smartSearchPlaceholder: 'E.g. "plumber with OSHA in Queens"', detectedWord: 'We detected',
+    customChainLabel: 'Custom',
   },
 };
 
@@ -304,12 +330,28 @@ function specialtyName(id, lang) {
   return s ? s[lang] : id;
 }
 
-function createPinIcon(count, isSelected) {
+function haversineDistanceKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function chainPinColor(chain, isSelected) {
+  if (isSelected) return '#1c1917';
+  if (chain === "Lowe's") return '#1e40af';
+  if (chain === 'Personalizado' || chain === 'Custom') return '#be123c';
+  return '#78716c';
+}
+
+function createPinIcon(count, isSelected, chain) {
+  const bg = chainPinColor(chain, isSelected);
   return L.divIcon({
     className: '',
     html: `
       <div style="display:flex;flex-direction:column;align-items:center;">
-        <div style="background:${isSelected ? '#1c1917' : '#78716c'};border-radius:9999px;padding:6px;box-shadow:0 1px 3px rgba(0,0,0,0.35);">
+        <div style="background:${bg};border-radius:9999px;padding:6px;box-shadow:0 1px 3px rgba(0,0,0,0.35);">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
         </div>
         <span style="background:white;font-size:11px;font-weight:700;padding:1px 6px;border-radius:9999px;box-shadow:0 1px 2px rgba(0,0,0,0.25);margin-top:2px;color:#44403c;white-space:nowrap;">${count}</span>
@@ -318,6 +360,42 @@ function createPinIcon(count, isSelected) {
     iconSize: [40, 52],
     iconAnchor: [20, 52],
   });
+}
+
+function createUserLocationIcon() {
+  return L.divIcon({
+    className: '',
+    html: `
+      <div style="width:16px;height:16px;border-radius:9999px;background:#f59e0b;border:3px solid white;box-shadow:0 0 0 4px rgba(245,158,11,0.35);"></div>
+    `,
+    iconSize: [16, 16],
+    iconAnchor: [8, 8],
+  });
+}
+
+function parseSmartSearch(text, lang) {
+  const t = text.toLowerCase();
+  const result = { specialty: null, certification: null, city: null };
+  for (const s of SPECIALTIES) {
+    if (t.includes(s.es.toLowerCase()) || t.includes(s.en.toLowerCase()) || (s.id === 'plumbing' && t.includes('plomer')) || (s.id === 'electrical' && t.includes('electric')) || (s.id === 'painting' && t.includes('pint')) || (s.id === 'carpentry' && t.includes('carpint'))) {
+      result.specialty = s.id;
+      break;
+    }
+  }
+  for (const c of CERTIFICATIONS) {
+    if (t.includes(c.toLowerCase())) { result.certification = c; break; }
+  }
+  const cityKeywords = {
+    'Nueva York': ['queens', 'brooklyn', 'bronx', 'manhattan', 'staten island', 'nueva york', 'new york', 'nyc'],
+    'Nueva Jersey': ['newark', 'jersey city', 'elizabeth', 'linden', 'union', 'nueva jersey', 'new jersey', 'nj'],
+    'Florida': ['miami', 'doral', 'hialeah', 'pembroke pines', 'florida'],
+    'Texas': ['houston', 'texas'],
+    'California': ['los angeles', 'hollywood', 'glendale', 'california', 'la '],
+  };
+  for (const [city, keywords] of Object.entries(cityKeywords)) {
+    if (keywords.some(k => t.includes(k))) { result.city = city; break; }
+  }
+  return result;
 }
 
 function HazardStripe() {
@@ -385,7 +463,7 @@ function WorkerCard({ worker, lang, L, onSelect, isFavorite, onToggleFavorite })
             ))}
           </div>
           <div className="flex items-center justify-between mt-2 text-sm">
-            <span className="text-stone-500">{worker.location}</span>
+            <span className="text-stone-500">{worker.location}{worker.distanceMi != null && <span className="text-slate-500 font-medium"> · {worker.distanceMi.toFixed(1)} {L.milesAway}</span>}</span>
             <span className="font-bold text-stone-900">${worker.hourlyRate}{L.perHour}</span>
           </div>
           <div className="flex gap-1.5 mt-2">
@@ -435,6 +513,7 @@ export default function LaborHubApp() {
     earningsMonth: 780,
     earningsYear: 8940,
     profileViews: 34,
+    portfolioPhotos: [],
   });
   const [justSaved, setJustSaved] = useState(false);
   const [requests, setRequests] = useState([
@@ -452,6 +531,16 @@ export default function LaborHubApp() {
   const [filters, setFilters] = useState({ specialty: '', minRating: 0, maxPrice: 999, language: '', certification: '', tool: '', vehicle: '' });
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedLocationId, setSelectedLocationId] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
+  const [locationError, setLocationError] = useState(null);
+  const [locatingUser, setLocatingUser] = useState(false);
+  const [customLocations, setCustomLocations] = useState([]);
+  const [showAddPoint, setShowAddPoint] = useState(false);
+  const [newPointName, setNewPointName] = useState('');
+  const [mapChainFilter, setMapChainFilter] = useState('Todas');
+  const [smartSearchText, setSmartSearchText] = useState('');
+  const [smartSearchDetected, setSmartSearchDetected] = useState(null);
+  const [portfolioCategory, setPortfolioCategory] = useState('before');
   const [bookingWorker, setBookingWorker] = useState(null);
   const [bookingStep, setBookingStep] = useState(null);
   const [bookingDate, setBookingDate] = useState('today');
@@ -883,13 +972,30 @@ export default function LaborHubApp() {
 
         <div>
           <div className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2">{L.portfolio}</div>
-          <div className="grid grid-cols-3 gap-2">
-            {[Hammer, Wrench, PaintBucket].map((Icon, i) => (
-              <div key={i} className="h-20 bg-orange-50 rounded-xl flex items-center justify-center"><Icon size={22} className="text-orange-300" /></div>
+          <div className="flex gap-2 mb-2">
+            {PORTFOLIO_CATEGORIES.map(cat => (
+              <Chip key={cat.id} label={cat[lang]} active={portfolioCategory === cat.id} onClick={() => setPortfolioCategory(cat.id)} />
             ))}
-            <button className="h-20 bg-stone-50 border-2 border-dashed border-stone-200 rounded-xl flex items-center justify-center text-stone-300">
+          </div>
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {profile.portfolioPhotos.filter(p => p.category === portfolioCategory).map(p => (
+              <div key={p.id} className="relative shrink-0">
+                <img src={p.url} alt="" className="w-24 h-24 rounded-xl object-cover" />
+                <button onClick={() => setProfile(pr => ({ ...pr, portfolioPhotos: pr.portfolioPhotos.filter(x => x.id !== p.id) }))} className="absolute -top-1.5 -right-1.5 bg-stone-900 rounded-full p-1">
+                  <X size={11} className="text-white" />
+                </button>
+              </div>
+            ))}
+            <label className="w-24 h-24 bg-stone-50 border-2 border-dashed border-stone-200 rounded-xl flex items-center justify-center text-stone-300 cursor-pointer shrink-0">
+              <input type="file" accept="image/*" className="hidden" onChange={e => {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = () => setProfile(pr => ({ ...pr, portfolioPhotos: [...pr.portfolioPhotos, { id: Date.now(), url: reader.result, category: portfolioCategory }] }));
+                reader.readAsDataURL(file);
+              }} />
               <Plus size={22} />
-            </button>
+            </label>
           </div>
         </div>
 
@@ -921,10 +1027,42 @@ export default function LaborHubApp() {
       if (filters.tool && !w.tools.includes(filters.tool)) return false;
       if (filters.vehicle && w.vehicle !== filters.vehicle) return false;
       return true;
-    }).sort((a, b) => (b.featured - a.featured) || (b.rating - a.rating));
+    }).map(w => {
+      const loc = LOCATIONS.find(l => l.name === w.location);
+      const distanceMi = userLocation && loc ? haversineDistanceKm(userLocation.lat, userLocation.lng, loc.lat, loc.lng) * 0.621371 : null;
+      return { ...w, distanceMi };
+    }).sort((a, b) => {
+      if (userLocation && a.distanceMi !== null && b.distanceMi !== null) return a.distanceMi - b.distanceMi;
+      return (b.featured - a.featured) || (b.rating - a.rating);
+    });
+
+    const runSmartSearch = () => {
+      const detected = parseSmartSearch(smartSearchText, lang);
+      setSmartSearchDetected(detected);
+      if (detected.specialty) setFilters(f => ({ ...f, specialty: detected.specialty }));
+      if (detected.certification) setFilters(f => ({ ...f, certification: detected.certification }));
+      if (detected.city) setSelectedCity(detected.city);
+    };
 
     return (
       <div className="p-4 space-y-3">
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">{L.smartSearchLabel}</div>
+          <div className="flex items-center gap-2">
+            <input value={smartSearchText} onChange={e => setSmartSearchText(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') runSmartSearch(); }} placeholder={L.smartSearchPlaceholder} className="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm text-stone-900 outline-none bg-white" />
+            <button onClick={runSmartSearch} className="bg-slate-700 text-white rounded-xl px-3 py-2"><Search size={16} /></button>
+          </div>
+          {smartSearchDetected && (
+            <div className="flex flex-wrap gap-1.5 mt-2">
+              <span className="text-xs text-slate-500">{L.detectedWord}:</span>
+              {smartSearchDetected.specialty && <span className="text-xs bg-white border border-slate-200 rounded-full px-2 py-0.5 text-slate-700">{specialtyName(smartSearchDetected.specialty, lang)}</span>}
+              {smartSearchDetected.certification && <span className="text-xs bg-white border border-slate-200 rounded-full px-2 py-0.5 text-slate-700">{smartSearchDetected.certification}</span>}
+              {smartSearchDetected.city && <span className="text-xs bg-white border border-slate-200 rounded-full px-2 py-0.5 text-slate-700">{smartSearchDetected.city}</span>}
+              {!smartSearchDetected.specialty && !smartSearchDetected.certification && !smartSearchDetected.city && <span className="text-xs text-slate-400">—</span>}
+            </div>
+          )}
+        </div>
+
         <div className="flex items-center gap-2 bg-white border border-stone-200 rounded-xl px-3 py-2">
           <Search size={16} className="text-stone-400" />
           <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder={L.searchPlaceholder} className="flex-1 outline-none text-sm text-stone-900" />
@@ -934,7 +1072,7 @@ export default function LaborHubApp() {
         </div>
 
         <div className="flex gap-2 overflow-x-auto pb-1">
-          {['Todas', ...CITIES].map(c => <Chip key={c} label={c} activeColor="slate" active={selectedCity === c} onClick={() => setSelectedCity(c)} />)}
+          {['Todas', ...CITIES].map(c => <Chip key={c} label={c === 'Todas' ? L.allCitiesWord : c} activeColor="slate" active={selectedCity === c} onClick={() => setSelectedCity(c)} />)}
         </div>
 
         <div className="flex gap-2">
@@ -1189,14 +1327,60 @@ export default function LaborHubApp() {
   // MAP
   // ---------------------------------------------------------------------
   const renderMap = () => {
-    const cityLocations = LOCATIONS.filter(l => l.city === mapCity);
-    const selectedLoc = LOCATIONS.find(l => l.id === selectedLocationId);
+    const allLocations = [...LOCATIONS, ...customLocations];
+    let cityLocations = allLocations.filter(l => l.city === mapCity);
+    if (mapChainFilter !== 'Todas') cityLocations = cityLocations.filter(l => l.chain === mapChainFilter);
+    const selectedLoc = allLocations.find(l => l.id === selectedLocationId);
     const center = CITY_CENTERS[mapCity];
+    const distanceToSelected = userLocation && selectedLoc ? haversineDistanceKm(userLocation.lat, userLocation.lng, selectedLoc.lat, selectedLoc.lng) * 0.621371 : null;
+
+    const handleFindMe = () => {
+      if (!('geolocation' in navigator)) { setLocationError(L.locationDeniedText); return; }
+      setLocatingUser(true);
+      setLocationError(null);
+      navigator.geolocation.getCurrentPosition(
+        (pos) => { setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }); setLocatingUser(false); },
+        () => { setLocationError(L.locationDeniedText); setLocatingUser(false); },
+        { timeout: 8000 }
+      );
+    };
+
+    const handleAddPoint = () => {
+      if (!newPointName.trim()) return;
+      const id = Date.now();
+      setCustomLocations(prev => [...prev, { id, chain: 'Personalizado', name: newPointName.trim(), address: L.customChainLabel, city: mapCity, workers: 0, lat: center.lat, lng: center.lng }]);
+      setNewPointName('');
+      setShowAddPoint(false);
+    };
+
     return (
       <div className="p-4 space-y-3">
         <div className="flex gap-2 overflow-x-auto pb-1">
           {CITIES.map(c => <Chip key={c} label={c} activeColor="slate" active={mapCity === c} onClick={() => { setMapCity(c); setSelectedLocationId(null); }} />)}
         </div>
+
+        <div className="flex gap-2">
+          {['Todas', 'Home Depot', "Lowe's"].map(ch => (
+            <Chip key={ch} label={ch === 'Todas' ? L.allChainsWord : ch} activeColor="slate" active={mapChainFilter === ch} onClick={() => setMapChainFilter(ch)} />
+          ))}
+        </div>
+
+        <div className="flex gap-2">
+          <button onClick={handleFindMe} className="flex-1 bg-white border border-stone-200 rounded-xl py-2 text-sm font-semibold text-stone-700 flex items-center justify-center gap-2">
+            <Navigation size={15} className={locatingUser ? 'animate-pulse' : ''} /> {locatingUser ? L.locatingText : L.searchNearMe}
+          </button>
+          <button onClick={() => setShowAddPoint(true)} className="bg-white border border-stone-200 rounded-xl px-3 py-2 text-stone-500">
+            <Plus size={17} />
+          </button>
+        </div>
+        {locationError && <div className="text-xs text-rose-500">{locationError}</div>}
+
+        {showAddPoint && (
+          <div className="bg-white border border-stone-200 rounded-2xl p-3 flex items-center gap-2">
+            <input value={newPointName} onChange={e => setNewPointName(e.target.value)} placeholder={L.customPointNamePlaceholder} className="flex-1 border border-stone-200 rounded-xl px-3 py-2 text-sm text-stone-900 outline-none" />
+            <button onClick={handleAddPoint} className="bg-rose-600 text-white rounded-xl px-3 py-2 text-sm font-semibold shrink-0">{L.addPointConfirm}</button>
+          </div>
+        )}
 
         <div className="relative rounded-2xl border border-stone-200 h-64 overflow-hidden">
           <MapContainer key={mapCity} center={[center.lat, center.lng]} zoom={center.zoom} style={{ height: '100%', width: '100%' }} scrollWheelZoom={false}>
@@ -1208,18 +1392,25 @@ export default function LaborHubApp() {
               <Marker
                 key={loc.id}
                 position={[loc.lat, loc.lng]}
-                icon={createPinIcon(loc.workers, selectedLocationId === loc.id)}
+                icon={createPinIcon(loc.workers, selectedLocationId === loc.id, loc.chain)}
                 eventHandlers={{ click: () => setSelectedLocationId(loc.id) }}
               />
             ))}
+            {userLocation && <Marker position={[userLocation.lat, userLocation.lng]} icon={createUserLocationIcon()} />}
           </MapContainer>
         </div>
 
         {selectedLoc ? (
           <div className="bg-white border border-stone-200 rounded-2xl p-4">
-            <div className="font-bold text-stone-900">{selectedLoc.name}</div>
+            <div className="flex items-center justify-between">
+              <div className="font-bold text-stone-900">{selectedLoc.name}</div>
+              <span className="text-xs bg-stone-100 text-stone-500 px-2 py-0.5 rounded-full">{selectedLoc.chain}</span>
+            </div>
             <div className="text-xs text-stone-400 mb-1">{selectedLoc.address}</div>
-            <div className="text-sm text-stone-500 mb-3">{selectedLoc.workers} {L.workersAvailableWord}</div>
+            <div className="text-sm text-stone-500 mb-3">
+              {selectedLoc.workers} {L.workersAvailableWord}
+              {distanceToSelected !== null && <span> · {distanceToSelected.toFixed(1)} {L.milesAway}</span>}
+            </div>
             {role === 'contractor' ? (
               <button onClick={() => { setSelectedCity(selectedLoc.city); setScreen('c-search'); }} className="w-full bg-slate-700 text-white rounded-xl py-2.5 text-sm font-semibold">{L.viewWorkersHere}</button>
             ) : (
