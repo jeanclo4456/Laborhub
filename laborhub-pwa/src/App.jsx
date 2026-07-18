@@ -6,7 +6,7 @@ import {
   Hammer, Wrench, Zap, PaintBucket, Layers, HardHat, LayoutGrid, Trash2, Users, Wind, MoreHorizontal,
   MapPin, Star, MessageCircle, Bell, Calendar, Clock, Camera, Check, X, Filter, Search, Heart,
   ChevronRight, ChevronDown, Globe, Truck, Home, User, Briefcase, DollarSign, Plus, ArrowLeft, Send,
-  TrendingUp, BadgeCheck, Settings, HelpCircle, LogOut, Lock, Eye
+  TrendingUp, BadgeCheck, Settings, HelpCircle, LogOut, Lock, Eye, Pause, Award, ShieldCheck
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -35,6 +35,51 @@ const LANGUAGES = [
   'Español', 'Inglés', 'Portugués', 'Polaco', 'Criollo Haitiano', 'Ruso', 'Francés',
   'Mandarín', 'Italiano', 'Árabe', 'Ucraniano', 'Vietnamita', 'Albanés',
 ];
+
+const CERTIFICATIONS = [
+  'OSHA 10', 'OSHA 30', 'EPA Certification', 'Journeyman', 'Licensed Electrician', 'Licensed Plumber',
+  'HVAC Certified', 'CDL', 'Forklift Certification', 'Scissor Lift', 'Boom Lift', 'First Aid', 'CPR',
+];
+
+const TOOLS = [
+  'Taladro', 'Sierra circular', 'Compresor', 'Escalera', 'Generador', 'Soldadora',
+  'Herramientas de plomería', 'Herramientas eléctricas', 'Herramientas HVAC',
+  'Herramientas de drywall', 'Herramientas de roofing',
+];
+
+const VEHICLES = ['Pickup', 'Van', 'Cargo Van', 'Camión', 'SUV', 'Sedán', 'Sin vehículo'];
+
+const WORKER_STATUSES = [
+  { id: 'available', es: 'Disponible', en: 'Available', color: 'bg-stone-900', dotColor: 'bg-amber-400', beacon: true },
+  { id: 'enroute', es: 'En camino', en: 'On the way', color: 'bg-slate-700', icon: Truck },
+  { id: 'working', es: 'Trabajando', en: 'Working', color: 'bg-orange-700', icon: Hammer },
+  { id: 'resting', es: 'Descansando', en: 'Resting', color: 'bg-stone-400', icon: Pause },
+  { id: 'unavailable', es: 'No disponible', en: 'Unavailable', color: 'bg-stone-200', icon: null },
+];
+
+const BADGE_DEFS = [
+  { id: 'top', es: 'Top Worker', en: 'Top Worker', icon: Star, color: 'bg-amber-100 text-amber-700', check: (s) => s.rating >= 4.8 },
+  { id: 'jobs100', es: '+100 trabajos', en: '100+ jobs', icon: Award, color: 'bg-stone-900 text-amber-400', check: (s) => s.jobsDone >= 100 },
+  { id: 'fast', es: 'Responde rápido', en: 'Fast responder', icon: Zap, color: 'bg-blue-100 text-blue-700', check: (s) => s.avgResponseMinutes <= 15 },
+  { id: 'reliable', es: 'Nunca cancela', en: 'Never cancels', icon: ShieldCheck, color: 'bg-emerald-100 text-emerald-700', check: (s) => s.cancellationRate === 0 },
+  { id: 'punctual', es: 'Excelente puntualidad', en: 'Excellent punctuality', icon: Clock, color: 'bg-slate-100 text-slate-700', check: (s) => s.punctuality >= 95 },
+  { id: 'popular', es: 'Muy solicitado', en: 'Highly requested', icon: TrendingUp, color: 'bg-rose-100 text-rose-700', check: (s) => s.popular === true },
+];
+
+function getWorkerLevel(jobsDone, lang) {
+  const levels = lang === 'es'
+    ? ['Nuevo', 'Con experiencia', 'Profesional', 'Experto', 'Elite']
+    : ['New', 'Experienced', 'Professional', 'Expert', 'Elite'];
+  if (jobsDone >= 250) return levels[4];
+  if (jobsDone >= 100) return levels[3];
+  if (jobsDone >= 50) return levels[2];
+  if (jobsDone >= 10) return levels[1];
+  return levels[0];
+}
+
+function getEarnedBadges(stats) {
+  return BADGE_DEFS.filter(b => b.check(stats));
+}
 
 const FREE_FAVORITES_LIMIT = 3;
 
@@ -84,13 +129,13 @@ const CITY_CENTERS = {
 };
 
 const WORKERS = [
-  { id: 1, name: 'Miguel Torres', initials: 'MT', color: 'bg-orange-500', specialties: ['plumbing', 'general'], experience: 8, languages: ['Español', 'Inglés'], transport: true, tools: true, hourlyRate: 28, dailyRate: 210, rating: 4.9, reviewCount: 47, city: 'Nueva York', location: 'Home Depot - Flushing', availableNow: true, availableDays: [true, true, true, true, true, true, false], verified: true, featured: true },
-  { id: 2, name: 'Carlos Ramírez', initials: 'CR', color: 'bg-emerald-600', specialties: ['carpentry', 'drywall'], experience: 5, languages: ['Español'], transport: true, tools: true, hourlyRate: 24, dailyRate: 185, rating: 4.7, reviewCount: 31, city: 'Nueva Jersey', location: 'Home Depot - Jersey City', availableNow: false, availableDays: [false, true, true, true, true, false, false], verified: true, featured: false },
-  { id: 3, name: 'Luis Fernández', initials: 'LF', color: 'bg-slate-600', specialties: ['electrical', 'hvac'], experience: 12, languages: ['Español', 'Inglés'], transport: true, tools: true, hourlyRate: 35, dailyRate: 260, rating: 5.0, reviewCount: 89, city: 'Florida', location: 'Home Depot - Doral', availableNow: true, availableDays: [true, true, true, true, true, true, true], verified: true, featured: true },
-  { id: 4, name: 'José Martínez', initials: 'JM', color: 'bg-amber-600', specialties: ['painting', 'drywall'], experience: 4, languages: ['Español'], transport: false, tools: true, hourlyRate: 20, dailyRate: 150, rating: 4.5, reviewCount: 18, city: 'Texas', location: 'Home Depot - Westheimer', availableNow: true, availableDays: [true, false, true, false, true, false, true], verified: false, featured: false },
-  { id: 5, name: 'Ana Gómez', initials: 'AG', color: 'bg-rose-500', specialties: ['tile', 'demolition'], experience: 6, languages: ['Español', 'Inglés', 'Mandarín'], transport: true, tools: true, hourlyRate: 26, dailyRate: 195, rating: 4.8, reviewCount: 54, city: 'California', location: 'Home Depot - Sunset Blvd', availableNow: false, availableDays: [false, true, true, true, true, true, false], verified: true, featured: false },
-  { id: 6, name: 'Roberto Díaz', initials: 'RD', color: 'bg-stone-600', specialties: ['roofing', 'general'], experience: 10, languages: ['Español', 'Ruso'], transport: true, tools: false, hourlyRate: 27, dailyRate: 200, rating: 4.6, reviewCount: 39, city: 'Nueva York', location: 'Home Depot - Long Island City', availableNow: true, availableDays: [true, true, true, true, true, false, false], verified: true, featured: false },
-  { id: 7, name: 'David Sánchez', initials: 'DS', color: 'bg-teal-600', specialties: ['plumbing', 'hvac'], experience: 15, languages: ['Español', 'Inglés', 'Criollo Haitiano'], transport: true, tools: true, hourlyRate: 32, dailyRate: 240, rating: 4.9, reviewCount: 102, city: 'Florida', location: 'Home Depot - Doral', availableNow: false, availableDays: [true, true, false, true, true, true, true], verified: true, featured: true },
+  { id: 1, name: 'Miguel Torres', initials: 'MT', color: 'bg-orange-500', specialties: ['plumbing', 'general'], experience: 8, languages: ['Español', 'Inglés'], certifications: ['OSHA 10', 'CPR'], tools: ['Herramientas de plomería', 'Taladro', 'Escalera'], vehicle: 'Van', canTransportTools: true, hourlyRate: 28, dailyRate: 210, rating: 4.9, reviewCount: 47, jobsDone: 142, punctuality: 97, avgResponseMinutes: 6, cancellationRate: 0, popular: true, city: 'Nueva York', location: 'Home Depot - Flushing', availableNow: true, availableDays: [true, true, true, true, true, true, false], verified: true, featured: true },
+  { id: 2, name: 'Carlos Ramírez', initials: 'CR', color: 'bg-emerald-600', specialties: ['carpentry', 'drywall'], experience: 5, languages: ['Español'], certifications: ['OSHA 10'], tools: ['Sierra circular', 'Taladro', 'Herramientas de drywall'], vehicle: 'Pickup', canTransportTools: true, hourlyRate: 24, dailyRate: 185, rating: 4.7, reviewCount: 31, jobsDone: 68, punctuality: 92, avgResponseMinutes: 18, cancellationRate: 3, popular: false, city: 'Nueva Jersey', location: 'Home Depot - Jersey City', availableNow: false, availableDays: [false, true, true, true, true, false, false], verified: true, featured: false },
+  { id: 3, name: 'Luis Fernández', initials: 'LF', color: 'bg-slate-600', specialties: ['electrical', 'hvac'], experience: 12, languages: ['Español', 'Inglés'], certifications: ['Licensed Electrician', 'HVAC Certified', 'OSHA 30'], tools: ['Herramientas eléctricas', 'Herramientas HVAC', 'Escalera'], vehicle: 'Cargo Van', canTransportTools: true, hourlyRate: 35, dailyRate: 260, rating: 5.0, reviewCount: 89, jobsDone: 215, punctuality: 99, avgResponseMinutes: 4, cancellationRate: 0, popular: true, city: 'Florida', location: 'Home Depot - Doral', availableNow: true, availableDays: [true, true, true, true, true, true, true], verified: true, featured: true },
+  { id: 4, name: 'José Martínez', initials: 'JM', color: 'bg-amber-600', specialties: ['painting', 'drywall'], experience: 4, languages: ['Español'], certifications: [], tools: ['Herramientas de drywall'], vehicle: 'Sin vehículo', canTransportTools: false, hourlyRate: 20, dailyRate: 150, rating: 4.5, reviewCount: 18, jobsDone: 34, punctuality: 88, avgResponseMinutes: 25, cancellationRate: 6, popular: false, city: 'Texas', location: 'Home Depot - Westheimer', availableNow: true, availableDays: [true, false, true, false, true, false, true], verified: false, featured: false },
+  { id: 5, name: 'Ana Gómez', initials: 'AG', color: 'bg-rose-500', specialties: ['tile', 'demolition'], experience: 6, languages: ['Español', 'Inglés', 'Mandarín'], certifications: ['OSHA 10', 'First Aid'], tools: ['Taladro', 'Compresor'], vehicle: 'SUV', canTransportTools: true, hourlyRate: 26, dailyRate: 195, rating: 4.8, reviewCount: 54, jobsDone: 91, punctuality: 95, avgResponseMinutes: 12, cancellationRate: 1, popular: false, city: 'California', location: 'Home Depot - Sunset Blvd', availableNow: false, availableDays: [false, true, true, true, true, true, false], verified: true, featured: false },
+  { id: 6, name: 'Roberto Díaz', initials: 'RD', color: 'bg-stone-600', specialties: ['roofing', 'general'], experience: 10, languages: ['Español', 'Ruso'], certifications: ['OSHA 10'], tools: ['Herramientas de roofing'], vehicle: 'Pickup', canTransportTools: true, hourlyRate: 27, dailyRate: 200, rating: 4.6, reviewCount: 39, jobsDone: 88, punctuality: 90, avgResponseMinutes: 20, cancellationRate: 4, popular: false, city: 'Nueva York', location: 'Home Depot - Long Island City', availableNow: true, availableDays: [true, true, true, true, true, false, false], verified: true, featured: false },
+  { id: 7, name: 'David Sánchez', initials: 'DS', color: 'bg-teal-600', specialties: ['plumbing', 'hvac'], experience: 15, languages: ['Español', 'Inglés', 'Criollo Haitiano'], certifications: ['Licensed Plumber', 'HVAC Certified', 'CDL', 'CPR'], tools: ['Herramientas de plomería', 'Herramientas HVAC', 'Generador'], vehicle: 'Camión', canTransportTools: true, hourlyRate: 32, dailyRate: 240, rating: 4.9, reviewCount: 102, jobsDone: 203, punctuality: 98, avgResponseMinutes: 5, cancellationRate: 0, popular: true, city: 'Florida', location: 'Home Depot - Doral', availableNow: false, availableDays: [true, true, false, true, true, true, true], verified: true, featured: true },
 ];
 
 const WORKER_CONVERSATIONS = [
@@ -125,15 +170,15 @@ const translations = {
     appName: 'LaborHub',
     onboardEyebrow: 'Mano de obra bajo demanda',
     tagline: 'Del estacionamiento de Home Depot a tu teléfono. Conecta con trabajo o mano de obra confiable, hoy.',
-    imWorker: 'Soy Trabajador',
-    imContractor: 'Soy Contratista',
+    imWorker: 'Encontrar trabajo',
+    imContractor: 'Contratar trabajadores',
     home: 'Inicio', profile: 'Perfil', map: 'Mapa', messages: 'Mensajes', search: 'Buscar', favorites: 'Favoritos',
     homeEyebrow: 'Tu panel', statusEyebrow: 'Tu estado',
     availableNow: 'Disponible ahora', unavailable: 'No disponible',
     activeSubtext: 'Contratistas cercanos pueden verte y enviarte solicitudes',
     inactiveSubtext: 'Actívalo para recibir solicitudes de trabajo',
     yourMeetingPoint: 'Tu punto de encuentro', change: 'Cambiar',
-    statsCompletedJobs: 'Trabajos hechos', statsWeekEarnings: 'Esta semana', statsRating: 'Calificación',
+    statsCompletedJobs: 'Trabajos hechos', statsWeekEarnings: 'Este mes', statsRating: 'Calificación',
     incomingRequests: 'Solicitudes de trabajo', noRequests: 'Activa tu disponibilidad para empezar a recibir solicitudes',
     accept: 'Aceptar', reject: 'Rechazar', accepted: 'Aceptado', rejected: 'Rechazado',
     today: 'Hoy', tomorrow: 'Mañana', thisWeek: 'Esta semana', reviewsWord: 'reseñas',
@@ -177,19 +222,28 @@ const translations = {
     planFeatureSupport: 'Soporte prioritario',
     favLimitNotice: 'Con el plan Gratis puedes guardar hasta 3 favoritos.', viewPlansButton: 'Ver planes',
     premiumBannerTitleWorker: 'Destaca tu perfil:', premiumBannerDescWorker: 'aparece primero y consigue más trabajo.',
+    onboardQuestion: '¿Qué deseas hacer hoy?',
+    vehicleLabel: 'Vehículo', canTransportToolsLabel: 'Puede transportar herramientas',
+    toolsOwnedLabel: 'Herramientas que tienes', certificationsLabel: 'Certificaciones',
+    anyCertificationLabel: 'Cualquier certificación', anyTool: 'Cualquier herramienta', anyVehicle: 'Cualquier vehículo',
+    levelLabel: 'Nivel', badgesLabel: 'Insignias', noBadgesYet: 'Aún sin insignias — sigue trabajando para ganarlas',
+    statPunctuality: 'Puntualidad', statResponseTime: 'Responde en', statCancellationRate: 'Cancelaciones',
+    statMemberSince: 'Miembro desde', statHoursWorked: 'Horas trabajadas',
+    statEarningsMonth: 'Ganado este mes', statEarningsYear: 'Ganado este año',
+    minutesAbbr: 'min', hoursAbbr: 'hrs',
   },
   en: {
     appName: 'LaborHub',
     onboardEyebrow: 'On-demand skilled labor',
     tagline: 'From the Home Depot parking lot to your phone. Connect with work or reliable workers, today.',
-    imWorker: "I'm a Worker", imContractor: "I'm a Contractor",
+    imWorker: 'Find work', imContractor: 'Hire workers',
     home: 'Home', profile: 'Profile', map: 'Map', messages: 'Messages', search: 'Search', favorites: 'Favorites',
     homeEyebrow: 'Your dashboard', statusEyebrow: 'Your status',
     availableNow: 'Available now', unavailable: 'Unavailable',
     activeSubtext: 'Nearby contractors can see you and send requests',
     inactiveSubtext: 'Turn it on to receive job requests',
     yourMeetingPoint: 'Your meeting point', change: 'Change',
-    statsCompletedJobs: 'Jobs done', statsWeekEarnings: 'This week', statsRating: 'Rating',
+    statsCompletedJobs: 'Jobs done', statsWeekEarnings: 'This month', statsRating: 'Rating',
     incomingRequests: 'Job requests', noRequests: 'Turn on your availability to start getting requests',
     accept: 'Accept', reject: 'Decline', accepted: 'Accepted', rejected: 'Declined',
     today: 'Today', tomorrow: 'Tomorrow', thisWeek: 'This week', reviewsWord: 'reviews',
@@ -233,6 +287,15 @@ const translations = {
     planFeatureSupport: 'Priority support',
     favLimitNotice: 'The Free plan allows up to 3 favorites.', viewPlansButton: 'View plans',
     premiumBannerTitleWorker: 'Feature your profile:', premiumBannerDescWorker: 'get seen first and land more work.',
+    onboardQuestion: 'What do you want to do today?',
+    vehicleLabel: 'Vehicle', canTransportToolsLabel: 'Can transport tools',
+    toolsOwnedLabel: 'Tools you have', certificationsLabel: 'Certifications',
+    anyCertificationLabel: 'Any certification', anyTool: 'Any tool', anyVehicle: 'Any vehicle',
+    levelLabel: 'Level', badgesLabel: 'Badges', noBadgesYet: 'No badges yet — keep working to earn them',
+    statPunctuality: 'Punctuality', statResponseTime: 'Responds within', statCancellationRate: 'Cancellation rate',
+    statMemberSince: 'Member since', statHoursWorked: 'Hours worked',
+    statEarningsMonth: 'Earned this month', statEarningsYear: 'Earned this year',
+    minutesAbbr: 'min', hoursAbbr: 'hrs',
   },
 };
 
@@ -298,7 +361,7 @@ function WorkerCard({ worker, lang, L, onSelect, isFavorite, onToggleFavorite })
   return (
     <div onClick={() => onSelect(worker.id)} className="bg-white rounded-2xl p-4 border border-stone-200 transform active:scale-95 transition-transform cursor-pointer">
       <div className="flex gap-3">
-        <div className={`w-14 h-14 rounded-full ${worker.color} flex items-center justify-center text-white font-bold text-lg shrink-0`}>
+        <div className={`w-14 h-14 rounded-full ${worker.color} flex items-center justify-center text-white font-bold text-lg shrink-0 ${worker.featured ? 'ring-2 ring-amber-400 ring-offset-2' : ''}`}>
           {worker.initials}
         </div>
         <div className="flex-1 min-w-0">
@@ -347,7 +410,7 @@ export default function LaborHubApp() {
   const [screen, setScreen] = useState('w-home');
   const [selectedCity, setSelectedCity] = useState('Todas');
   const [mapCity, setMapCity] = useState('Nueva York');
-  const [available, setAvailable] = useState(false);
+  const [workerStatus, setWorkerStatus] = useState('unavailable');
   const [profile, setProfile] = useState({
     name: 'Jonathan Pérez',
     phone: '(347) 555-0148',
@@ -355,12 +418,23 @@ export default function LaborHubApp() {
     specialties: ['plumbing'],
     experience: 5,
     languages: ['Español'],
-    transport: true,
-    tools: true,
+    certifications: ['OSHA 10'],
+    tools: ['Taladro', 'Escalera'],
+    vehicle: 'Van',
+    canTransportTools: true,
     hourlyRate: 25,
     dailyRate: 190,
     meetingPoint: 'Home Depot - Flushing',
     availableDays: [false, true, true, true, true, true, true],
+    jobsDone: 132,
+    punctuality: 96,
+    avgResponseMinutes: 8,
+    cancellationRate: 0,
+    memberSince: '2024',
+    hoursWorked: 512,
+    earningsMonth: 780,
+    earningsYear: 8940,
+    profileViews: 34,
   });
   const [justSaved, setJustSaved] = useState(false);
   const [requests, setRequests] = useState([
@@ -375,7 +449,7 @@ export default function LaborHubApp() {
   const [searchQuery, setSearchQuery] = useState('');
   const [availFilter, setAvailFilter] = useState('now');
   const [showFilters, setShowFilters] = useState(false);
-  const [filters, setFilters] = useState({ specialty: '', minRating: 0, maxPrice: 999, language: '' });
+  const [filters, setFilters] = useState({ specialty: '', minRating: 0, maxPrice: 999, language: '', certification: '', tool: '', vehicle: '' });
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedLocationId, setSelectedLocationId] = useState(null);
   const [bookingWorker, setBookingWorker] = useState(null);
@@ -420,7 +494,8 @@ export default function LaborHubApp() {
       <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
         <div className="text-xs font-semibold uppercase tracking-widest text-amber-400 mb-3">{L.onboardEyebrow}</div>
         <h1 className="text-5xl font-black tracking-tight mb-3">{L.appName}</h1>
-        <p className="text-stone-400 mb-12">{L.tagline}</p>
+        <p className="text-stone-400 mb-8">{L.tagline}</p>
+        <p className="text-white font-bold text-lg mb-4">{L.onboardQuestion}</p>
         <button onClick={() => { setRole('worker'); setScreen('w-home'); }} className="w-full bg-amber-500 hover:bg-amber-400 text-stone-900 font-bold py-4 rounded-2xl mb-3 flex items-center justify-center gap-2 transition-colors">
           <Hammer size={18} /> {L.imWorker}
         </button>
@@ -488,106 +563,143 @@ export default function LaborHubApp() {
   // ---------------------------------------------------------------------
   // WORKER: HOME
   // ---------------------------------------------------------------------
-  const renderWHome = () => (
-    <div className="p-4 space-y-5">
-      <div className="flex items-center gap-3">
-        <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center font-black text-orange-700 shrink-0 overflow-hidden">
-          {profile.photo ? <img src={profile.photo} alt="" className="w-14 h-14 object-cover" /> : profile.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-        </div>
-        <div>
-          <div className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">{L.homeEyebrow}</div>
-          <h2 className="text-2xl font-black text-stone-900 tracking-tight">{lang === 'es' ? 'Hola' : 'Hi'}, {profile.name.split(' ')[0]}</h2>
-          <div className="flex items-center gap-1 text-sm mt-1">
-            <Star size={14} className="text-amber-500" fill="currentColor" />
-            <span className="font-semibold text-stone-700">4.8</span>
-            <span className="text-stone-400">(47 {L.reviewsWord})</span>
-          </div>
-        </div>
-      </div>
+  const renderWHome = () => {
+    const currentStatus = WORKER_STATUSES.find(s => s.id === workerStatus);
+    const isAvailable = workerStatus === 'available';
+    const myLevel = getWorkerLevel(profile.jobsDone, lang);
+    const myBadges = getEarnedBadges({ rating: 4.8, jobsDone: profile.jobsDone, avgResponseMinutes: profile.avgResponseMinutes, cancellationRate: profile.cancellationRate, punctuality: profile.punctuality, popular: profile.profileViews >= 30 });
 
-      <div className={`relative rounded-3xl p-5 overflow-hidden ${available ? 'bg-stone-900' : 'bg-stone-200'}`}>
-        <div className="flex items-center justify-between relative z-10">
+    return (
+      <div className="p-4 space-y-5">
+        <div className="flex items-center gap-3">
+          <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center font-black text-orange-700 shrink-0 overflow-hidden">
+            {profile.photo ? <img src={profile.photo} alt="" className="w-14 h-14 object-cover" /> : profile.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+          </div>
           <div>
-            <div className={`text-xs font-semibold uppercase tracking-wider mb-1 ${available ? 'text-stone-400' : 'text-stone-500'}`}>{L.statusEyebrow}</div>
-            <div className={`text-xl font-black tracking-tight ${available ? 'text-white' : 'text-stone-600'}`}>{available ? L.availableNow : L.unavailable}</div>
-            <div className={`text-sm mt-1 ${available ? 'text-stone-300' : 'text-stone-500'}`}>{available ? L.activeSubtext : L.inactiveSubtext}</div>
-          </div>
-          <button onClick={() => setAvailable(!available)} className="relative w-16 h-16 flex items-center justify-center shrink-0">
-            {available && <span className="absolute inline-flex h-12 w-12 rounded-full bg-amber-400 opacity-75 animate-ping" />}
-            <span className={`relative inline-flex rounded-full h-12 w-12 items-center justify-center ${available ? 'bg-amber-400' : 'bg-stone-400'}`}>
-              <span className={`w-4 h-4 rounded-full ${available ? 'bg-stone-900' : 'bg-stone-100'}`} />
-            </span>
-          </button>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-2xl p-4 border border-stone-200">
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-stone-400">{L.yourMeetingPoint}</span>
-          <button onClick={() => setScreen('w-profile')} className="text-orange-600 text-sm font-semibold">{L.change}</button>
-        </div>
-        <div className="flex items-center gap-2 text-stone-900 font-semibold">
-          <MapPin size={16} className="text-orange-600" /> {profile.meetingPoint}
-        </div>
-      </div>
-
-      <div className="flex gap-3">
-        <StatCard icon={Briefcase} value="132" label={L.statsCompletedJobs} color="text-orange-600" />
-        <StatCard icon={DollarSign} value="$780" label={L.statsWeekEarnings} color="text-emerald-600" />
-        <StatCard icon={Star} value="4.8" label={L.statsRating} color="text-amber-500" />
-        {workerTier === 'pro' ? (
-          <StatCard icon={Eye} value="34" label={L.statsProfileViews} color="text-slate-500" />
-        ) : (
-          <button onClick={goToPlans} className="bg-white rounded-2xl p-3 border border-stone-200 flex-1 text-center">
-            <Lock size={18} className="mx-auto mb-1 text-stone-300" />
-            <div className="font-bold text-stone-400 text-xs">{L.proOnlyBadge}</div>
-            <div className="text-xs text-stone-400">{L.statsProfileViews}</div>
-          </button>
-        )}
-      </div>
-
-      {workerTier === 'free' && (
-        <button onClick={goToPlans} className="w-full bg-stone-900 rounded-2xl p-3 flex items-center gap-3 text-left">
-          <TrendingUp size={20} className="text-amber-400 shrink-0" />
-          <div className="text-xs text-stone-300 flex-1"><span className="font-bold text-white">{L.premiumBannerTitleWorker}</span> {L.premiumBannerDescWorker}</div>
-          <ChevronRight size={16} className="text-stone-500 shrink-0" />
-        </button>
-      )}
-
-      <div>
-        <div className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2">{L.incomingRequests}</div>
-        {requests.length === 0 && (
-          <div className="text-sm text-stone-400 bg-white rounded-2xl p-4 text-center border border-stone-200">{L.noRequests}</div>
-        )}
-        <div className="space-y-3">
-          {requests.map(r => (
-            <div key={r.id} className="bg-white rounded-2xl p-4 border border-stone-200">
-              <div className="flex items-center justify-between mb-1">
-                <span className="font-bold text-stone-900">{r.contractorName}</span>
-                <span className="font-black text-emerald-600">${r.rate}</span>
-              </div>
-              <div className="text-sm text-stone-600 mb-1">{r.job}</div>
-              <div className="text-xs text-stone-400 mb-3">{L[r.dateKey]}, {r.time}</div>
-              {r.status === 'pending' ? (
-                <div className="flex gap-2">
-                  <button onClick={() => setRequests(requests.map(x => x.id === r.id ? { ...x, status: 'accepted' } : x))} className="flex-1 bg-emerald-600 text-white rounded-xl py-2 text-sm font-semibold flex items-center justify-center gap-1">
-                    <Check size={15} /> {L.accept}
-                  </button>
-                  <button onClick={() => setRequests(requests.map(x => x.id === r.id ? { ...x, status: 'rejected' } : x))} className="flex-1 bg-stone-100 text-stone-500 rounded-xl py-2 text-sm font-semibold flex items-center justify-center gap-1">
-                    <X size={15} /> {L.reject}
-                  </button>
-                </div>
-              ) : (
-                <div className={`text-center text-sm font-semibold rounded-xl py-2 ${r.status === 'accepted' ? 'bg-emerald-50 text-emerald-600' : 'bg-stone-50 text-stone-400'}`}>
-                  {r.status === 'accepted' ? L.accepted : L.rejected}
-                </div>
-              )}
+            <div className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-1">{L.homeEyebrow}</div>
+            <h2 className="text-2xl font-black text-stone-900 tracking-tight">{lang === 'es' ? 'Hola' : 'Hi'}, {profile.name.split(' ')[0]}</h2>
+            <div className="flex items-center gap-1 text-sm mt-1">
+              <Star size={14} className="text-amber-500" fill="currentColor" />
+              <span className="font-semibold text-stone-700">4.8</span>
+              <span className="text-stone-400">(47 {L.reviewsWord})</span>
+              <span className="text-xs font-bold bg-stone-900 text-amber-400 px-2 py-0.5 rounded-full ml-1">{myLevel}</span>
             </div>
-          ))}
+          </div>
+        </div>
+
+        <div className={`relative rounded-3xl p-5 overflow-hidden transition-colors ${currentStatus.color}`}>
+          <div className="flex items-center justify-between relative z-10">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wider mb-1 text-white text-opacity-60">{L.statusEyebrow}</div>
+              <div className="text-xl font-black tracking-tight text-white">{currentStatus[lang]}</div>
+              <div className="text-sm mt-1 text-white text-opacity-70">{isAvailable ? L.activeSubtext : L.inactiveSubtext}</div>
+            </div>
+            <div className="relative w-16 h-16 flex items-center justify-center shrink-0">
+              {isAvailable && <span className="absolute inline-flex h-12 w-12 rounded-full bg-amber-400 opacity-75 animate-ping" />}
+              <span className={`relative inline-flex rounded-full h-12 w-12 items-center justify-center ${isAvailable ? 'bg-amber-400' : 'bg-white bg-opacity-20'}`}>
+                {isAvailable ? <span className="w-4 h-4 rounded-full bg-stone-900" /> : currentStatus.icon ? <currentStatus.icon size={22} className="text-white" /> : <span className="w-3 h-3 rounded-full bg-white bg-opacity-50" />}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {WORKER_STATUSES.map(s => {
+            const Icon = s.icon;
+            const isActive = workerStatus === s.id;
+            return (
+              <button key={s.id} onClick={() => setWorkerStatus(s.id)} className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold shrink-0 transition-colors ${isActive ? `${s.color} text-white` : 'bg-white text-stone-500 border border-stone-200'}`}>
+                {s.id === 'available' ? <span className="w-2 h-2 rounded-full bg-amber-400" /> : Icon ? <Icon size={13} /> : <span className="w-2 h-2 rounded-full bg-stone-400" />}
+                {s[lang]}
+              </button>
+            );
+          })}
+        </div>
+
+        {myBadges.length > 0 && (
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2">{L.badgesLabel}</div>
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {myBadges.map(b => {
+                const Icon = b.icon;
+                return (
+                  <div key={b.id} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shrink-0 ${b.color}`}>
+                    <Icon size={13} /> {b[lang]}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        <div className="bg-white rounded-2xl p-4 border border-stone-200">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs font-semibold uppercase tracking-wider text-stone-400">{L.yourMeetingPoint}</span>
+            <button onClick={() => setScreen('w-profile')} className="text-orange-600 text-sm font-semibold">{L.change}</button>
+          </div>
+          <div className="flex items-center gap-2 text-stone-900 font-semibold">
+            <MapPin size={16} className="text-orange-600" /> {profile.meetingPoint}
+          </div>
+        </div>
+
+        <div className="flex gap-3">
+          <StatCard icon={Briefcase} value={profile.jobsDone} label={L.statsCompletedJobs} color="text-orange-600" />
+          <StatCard icon={DollarSign} value={`$${profile.earningsMonth}`} label={L.statsWeekEarnings} color="text-emerald-600" />
+          <StatCard icon={Star} value="4.8" label={L.statsRating} color="text-amber-500" />
+          {workerTier === 'pro' ? (
+            <StatCard icon={Eye} value={profile.profileViews} label={L.statsProfileViews} color="text-slate-500" />
+          ) : (
+            <button onClick={goToPlans} className="bg-white rounded-2xl p-3 border border-stone-200 flex-1 text-center">
+              <Lock size={18} className="mx-auto mb-1 text-stone-300" />
+              <div className="font-bold text-stone-400 text-xs">{L.proOnlyBadge}</div>
+              <div className="text-xs text-stone-400">{L.statsProfileViews}</div>
+            </button>
+          )}
+        </div>
+
+        {workerTier === 'free' && (
+          <button onClick={goToPlans} className="w-full bg-stone-900 rounded-2xl p-3 flex items-center gap-3 text-left">
+            <TrendingUp size={20} className="text-amber-400 shrink-0" />
+            <div className="text-xs text-stone-300 flex-1"><span className="font-bold text-white">{L.premiumBannerTitleWorker}</span> {L.premiumBannerDescWorker}</div>
+            <ChevronRight size={16} className="text-stone-500 shrink-0" />
+          </button>
+        )}
+
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2">{L.incomingRequests}</div>
+          {requests.length === 0 && (
+            <div className="text-sm text-stone-400 bg-white rounded-2xl p-4 text-center border border-stone-200">{L.noRequests}</div>
+          )}
+          <div className="space-y-3">
+            {requests.map(r => (
+              <div key={r.id} className="bg-white rounded-2xl p-4 border border-stone-200">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-bold text-stone-900">{r.contractorName}</span>
+                  <span className="font-black text-emerald-600">${r.rate}</span>
+                </div>
+                <div className="text-sm text-stone-600 mb-1">{r.job}</div>
+                <div className="text-xs text-stone-400 mb-3">{L[r.dateKey]}, {r.time}</div>
+                {r.status === 'pending' ? (
+                  <div className="flex gap-2">
+                    <button onClick={() => setRequests(requests.map(x => x.id === r.id ? { ...x, status: 'accepted' } : x))} className="flex-1 bg-emerald-600 text-white rounded-xl py-2 text-sm font-semibold flex items-center justify-center gap-1">
+                      <Check size={15} /> {L.accept}
+                    </button>
+                    <button onClick={() => setRequests(requests.map(x => x.id === r.id ? { ...x, status: 'rejected' } : x))} className="flex-1 bg-stone-100 text-stone-500 rounded-xl py-2 text-sm font-semibold flex items-center justify-center gap-1">
+                      <X size={15} /> {L.reject}
+                    </button>
+                  </div>
+                ) : (
+                  <div className={`text-center text-sm font-semibold rounded-xl py-2 ${r.status === 'accepted' ? 'bg-emerald-50 text-emerald-600' : 'bg-stone-50 text-stone-400'}`}>
+                    {r.status === 'accepted' ? L.accepted : L.rejected}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   // ---------------------------------------------------------------------
   // WORKER: PROFILE
@@ -595,8 +707,11 @@ export default function LaborHubApp() {
   const renderWProfile = () => {
     const toggleSpecialty = (id) => setProfile(p => ({ ...p, specialties: p.specialties.includes(id) ? p.specialties.filter(s => s !== id) : [...p.specialties, id] }));
     const toggleLanguage = (name) => setProfile(p => ({ ...p, languages: p.languages.includes(name) ? p.languages.filter(l => l !== name) : [...p.languages, name] }));
+    const toggleCertification = (name) => setProfile(p => ({ ...p, certifications: p.certifications.includes(name) ? p.certifications.filter(c => c !== name) : [...p.certifications, name] }));
+    const toggleTool = (name) => setProfile(p => ({ ...p, tools: p.tools.includes(name) ? p.tools.filter(t => t !== name) : [...p.tools, name] }));
     const toggleDay = (i) => setProfile(p => { const days = [...p.availableDays]; days[i] = !days[i]; return { ...p, availableDays: days }; });
     const dayLabels = lang === 'es' ? ['D', 'L', 'M', 'M', 'J', 'V', 'S'] : ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    const myLevel = getWorkerLevel(profile.jobsDone, lang);
     const handlePhotoUpload = (e) => {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
@@ -608,7 +723,7 @@ export default function LaborHubApp() {
     return (
       <div className="p-4 space-y-5">
         <div className="flex flex-col items-center">
-          <label className="w-24 h-24 rounded-full bg-orange-50 flex items-center justify-center relative cursor-pointer overflow-hidden">
+          <label className={`w-24 h-24 rounded-full bg-orange-50 flex items-center justify-center relative cursor-pointer overflow-hidden ${workerTier === 'pro' ? 'ring-2 ring-amber-400 ring-offset-2' : ''}`}>
             <input type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
             {profile.photo ? (
               <img src={profile.photo} alt="" className="w-24 h-24 object-cover" />
@@ -620,6 +735,51 @@ export default function LaborHubApp() {
             </div>
           </label>
           <span className="text-xs text-stone-400 mt-2">{L.tapToChangePhoto}</span>
+        </div>
+
+        <div className="bg-white border border-stone-200 rounded-2xl p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-1 text-sm">
+              <Star size={14} className="text-amber-500" fill="currentColor" />
+              <span className="font-bold text-stone-900">4.8</span>
+              <span className="text-stone-400">(47 {L.reviewsWord})</span>
+            </div>
+            <span className="text-xs font-bold bg-stone-900 text-amber-400 px-2 py-0.5 rounded-full">{L.levelLabel}: {myLevel}</span>
+          </div>
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div>
+              <div className="font-black text-stone-900">{profile.jobsDone}</div>
+              <div className="text-xs text-stone-400">{L.statsCompletedJobs}</div>
+            </div>
+            <div>
+              <div className="font-black text-stone-900">{profile.punctuality}%</div>
+              <div className="text-xs text-stone-400">{L.statPunctuality}</div>
+            </div>
+            <div>
+              <div className="font-black text-stone-900">{profile.avgResponseMinutes} {L.minutesAbbr}</div>
+              <div className="text-xs text-stone-400">{L.statResponseTime}</div>
+            </div>
+            <div>
+              <div className="font-black text-stone-900">{profile.cancellationRate}%</div>
+              <div className="text-xs text-stone-400">{L.statCancellationRate}</div>
+            </div>
+            <div>
+              <div className="font-black text-stone-900">{profile.hoursWorked} {L.hoursAbbr}</div>
+              <div className="text-xs text-stone-400">{L.statHoursWorked}</div>
+            </div>
+            <div>
+              <div className="font-black text-stone-900">{profile.memberSince}</div>
+              <div className="text-xs text-stone-400">{L.statMemberSince}</div>
+            </div>
+            <div>
+              <div className="font-black text-emerald-600">${profile.earningsMonth}</div>
+              <div className="text-xs text-stone-400">{L.statEarningsMonth}</div>
+            </div>
+            <div>
+              <div className="font-black text-emerald-600">${profile.earningsYear}</div>
+              <div className="text-xs text-stone-400">{L.statEarningsYear}</div>
+            </div>
+          </div>
         </div>
 
         <div className="space-y-3">
@@ -656,15 +816,36 @@ export default function LaborHubApp() {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <div className="bg-white border border-stone-200 rounded-2xl p-3 flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm font-medium text-stone-700"><Truck size={16} /> {L.ownTransport}</div>
-            <Toggle checked={profile.transport} onChange={() => setProfile({ ...profile, transport: !profile.transport })} />
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2">{L.certificationsLabel}</div>
+          <div className="flex flex-wrap gap-2">
+            {CERTIFICATIONS.map(c => (
+              <Chip key={c} label={c} active={profile.certifications.includes(c)} onClick={() => toggleCertification(c)} />
+            ))}
           </div>
-          <div className="bg-white border border-stone-200 rounded-2xl p-3 flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm font-medium text-stone-700"><Wrench size={16} /> {L.ownTools}</div>
-            <Toggle checked={profile.tools} onChange={() => setProfile({ ...profile, tools: !profile.tools })} />
+        </div>
+
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2">{L.toolsOwnedLabel}</div>
+          <div className="flex flex-wrap gap-2">
+            {TOOLS.map(t => (
+              <Chip key={t} label={t} active={profile.tools.includes(t)} onClick={() => toggleTool(t)} />
+            ))}
           </div>
+        </div>
+
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2">{L.vehicleLabel}</div>
+          <div className="flex flex-wrap gap-2">
+            {VEHICLES.map(v => (
+              <Chip key={v} label={v} icon={Truck} active={profile.vehicle === v} onClick={() => setProfile({ ...profile, vehicle: v })} />
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-white border border-stone-200 rounded-2xl p-3 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm font-medium text-stone-700"><Truck size={16} /> {L.canTransportToolsLabel}</div>
+          <Toggle checked={profile.canTransportTools} onChange={() => setProfile({ ...profile, canTransportTools: !profile.canTransportTools })} />
         </div>
 
         <div className="flex gap-3">
@@ -736,6 +917,9 @@ export default function LaborHubApp() {
       if (filters.minRating && w.rating < filters.minRating) return false;
       if (filters.maxPrice && w.hourlyRate > filters.maxPrice) return false;
       if (filters.language && !w.languages.includes(filters.language)) return false;
+      if (filters.certification && !w.certifications.includes(filters.certification)) return false;
+      if (filters.tool && !w.tools.includes(filters.tool)) return false;
+      if (filters.vehicle && w.vehicle !== filters.vehicle) return false;
       return true;
     }).sort((a, b) => (b.featured - a.featured) || (b.rating - a.rating));
 
@@ -788,8 +972,29 @@ export default function LaborHubApp() {
                 {LANGUAGES.map(lo => <option key={lo} value={lo}>{lo}</option>)}
               </select>
             </div>
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wider text-stone-400">{L.certificationsLabel}</label>
+              <select value={filters.certification} onChange={e => setFilters({ ...filters, certification: e.target.value })} className="w-full border border-stone-200 rounded-xl px-3 py-2 mt-1 text-stone-900">
+                <option value="">{L.anyCertificationLabel}</option>
+                {CERTIFICATIONS.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wider text-stone-400">{L.toolsOwnedLabel}</label>
+              <select value={filters.tool} onChange={e => setFilters({ ...filters, tool: e.target.value })} className="w-full border border-stone-200 rounded-xl px-3 py-2 mt-1 text-stone-900">
+                <option value="">{L.anyTool}</option>
+                {TOOLS.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wider text-stone-400">{L.vehicleLabel}</label>
+              <select value={filters.vehicle} onChange={e => setFilters({ ...filters, vehicle: e.target.value })} className="w-full border border-stone-200 rounded-xl px-3 py-2 mt-1 text-stone-900">
+                <option value="">{L.anyVehicle}</option>
+                {VEHICLES.map(v => <option key={v} value={v}>{v}</option>)}
+              </select>
+            </div>
             <div className="flex gap-2">
-              <button onClick={() => setFilters({ specialty: '', minRating: 0, maxPrice: 999, language: '' })} className="flex-1 bg-stone-100 text-stone-500 rounded-xl py-2 text-sm font-semibold">{L.clearFilters}</button>
+              <button onClick={() => setFilters({ specialty: '', minRating: 0, maxPrice: 999, language: '', certification: '', tool: '', vehicle: '' })} className="flex-1 bg-stone-100 text-stone-500 rounded-xl py-2 text-sm font-semibold">{L.clearFilters}</button>
               <button onClick={() => setShowFilters(false)} className="flex-1 bg-slate-700 text-white rounded-xl py-2 text-sm font-semibold">{L.applyFilters}</button>
             </div>
           </div>
@@ -822,6 +1027,8 @@ export default function LaborHubApp() {
     const w = WORKERS.find(x => x.id === selectedWorkerId);
     if (!w) return null;
     const isFav = favorites.includes(w.id);
+    const wLevel = getWorkerLevel(w.jobsDone, lang);
+    const wBadges = getEarnedBadges(w);
     return (
       <div>
         <div className="sticky top-0 bg-white z-10 flex items-center gap-3 p-4 border-b border-stone-200">
@@ -830,7 +1037,7 @@ export default function LaborHubApp() {
         </div>
         <div className="p-4 space-y-4">
           <div className="flex items-center gap-4">
-            <div className={`w-20 h-20 rounded-full ${w.color} flex items-center justify-center text-white font-bold text-2xl`}>{w.initials}</div>
+            <div className={`w-20 h-20 rounded-full ${w.color} flex items-center justify-center text-white font-bold text-2xl ${w.featured ? 'ring-2 ring-amber-400 ring-offset-2' : ''}`}>{w.initials}</div>
             <div className="flex-1">
               <div className="flex items-center gap-1">
                 <span className="font-black text-lg text-stone-900">{w.name}</span>
@@ -840,6 +1047,7 @@ export default function LaborHubApp() {
                 <Star size={14} className="text-amber-500" fill="currentColor" />
                 <span className="font-semibold text-stone-700">{w.rating}</span>
                 <span className="text-stone-400">({w.reviewCount} {L.reviewsWord})</span>
+                <span className="text-xs font-bold bg-stone-900 text-amber-400 px-2 py-0.5 rounded-full ml-1">{wLevel}</span>
               </div>
               <div className="text-sm text-stone-500 flex items-center gap-1 mt-0.5"><MapPin size={13} /> {w.location}</div>
             </div>
@@ -847,6 +1055,19 @@ export default function LaborHubApp() {
               <Heart size={22} className={isFav ? 'text-rose-500' : 'text-stone-300'} fill={isFav ? 'currentColor' : 'none'} />
             </button>
           </div>
+
+          {wBadges.length > 0 && (
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {wBadges.map(b => {
+                const Icon = b.icon;
+                return (
+                  <div key={b.id} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shrink-0 ${b.color}`}>
+                    <Icon size={13} /> {b[lang]}
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
           <div className="flex flex-wrap gap-2">
             {w.specialties.map(s => <span key={s} className="text-xs bg-stone-100 text-stone-600 px-2 py-1 rounded-full">{specialtyName(s, lang)}</span>)}
@@ -862,14 +1083,34 @@ export default function LaborHubApp() {
               <div className="font-bold text-stone-900 text-sm">{w.languages.join(', ')}</div>
             </div>
             <div className="bg-white border border-stone-200 rounded-2xl p-3 flex items-center gap-2">
-              <Truck size={16} className={w.transport ? 'text-emerald-500' : 'text-stone-300'} />
-              <span className="text-sm text-stone-700">{L.ownTransport}</span>
+              <Truck size={16} className={w.vehicle !== 'Sin vehículo' ? 'text-emerald-500' : 'text-stone-300'} />
+              <div>
+                <div className="text-sm text-stone-700">{w.vehicle}</div>
+                {w.canTransportTools && <div className="text-xs text-emerald-600">{L.canTransportToolsLabel}</div>}
+              </div>
             </div>
-            <div className="bg-white border border-stone-200 rounded-2xl p-3 flex items-center gap-2">
-              <Wrench size={16} className={w.tools ? 'text-emerald-500' : 'text-stone-300'} />
-              <span className="text-sm text-stone-700">{L.ownTools}</span>
+            <div className="bg-white border border-stone-200 rounded-2xl p-3">
+              <div className="text-xs text-stone-400">{L.toolsOwnedLabel}</div>
+              <div className="font-bold text-stone-900 text-sm">{w.tools.length > 0 ? w.tools.join(', ') : '—'}</div>
+            </div>
+            <div className="bg-white border border-stone-200 rounded-2xl p-3">
+              <div className="text-xs text-stone-400">{L.statPunctuality}</div>
+              <div className="font-bold text-stone-900">{w.punctuality}%</div>
+            </div>
+            <div className="bg-white border border-stone-200 rounded-2xl p-3">
+              <div className="text-xs text-stone-400">{L.statResponseTime}</div>
+              <div className="font-bold text-stone-900">{w.avgResponseMinutes} {L.minutesAbbr}</div>
             </div>
           </div>
+
+          {w.certifications.length > 0 && (
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-2">{L.certificationsLabel}</div>
+              <div className="flex flex-wrap gap-2">
+                {w.certifications.map(c => <span key={c} className="text-xs bg-slate-50 border border-slate-200 text-slate-700 px-2 py-1 rounded-full">{c}</span>)}
+              </div>
+            </div>
+          )}
 
           <div className="flex gap-3">
             <div className="flex-1 bg-slate-50 rounded-2xl p-3 text-center">
